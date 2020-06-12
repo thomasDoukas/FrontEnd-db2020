@@ -11,6 +11,7 @@
     padding: 20px;
 }
 
+
 .Form {
     border: 2px solid rgb(151, 216, 207);
     border-radius: 27px;
@@ -91,4 +92,38 @@
 .Buttons {
     height: 100px;
     position: relative;
+}
+
+.Stats {
+    margin-top: 30px;
+    height: auto;
+    width: auto;
+    padding-bottom: 60px;
+    color: #333333;
+    text-align: center;
+    border: 2px solid rgb(151, 216, 207);
+    border-radius: 27px;
+    box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.50);
+    position: relative;
+}
+
+.Stats button {
+    width: 13%;
+    height: 30px;
+    color: #333333;
+    border-top: 0px;
+    border-bottom: 2px solid rgb(151, 216, 207);
+    border-left: 1px solid rgb(151, 216, 207);
+    border-right: 1px solid rgb(151, 216, 207);
+    cursor: pointer;
+    outline: none;
+}
+
+.Stats button:hover {
+    background-color: rgb(151, 216, 207);
+}
+
+.Stats button:active,
+.Stats button.active {
+    border-bottom: 2px solid white;
 }

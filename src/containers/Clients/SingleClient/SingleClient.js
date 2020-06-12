@@ -9,7 +9,9 @@ class SingleClient extends Component {
     state = {
         loadedClient: null,
         // error: false,
-        newData: null
+        newData: null,
+        selectedTab: "select1",
+        tabData: null
     }
 
     componentDidMount() {
@@ -36,17 +38,28 @@ class SingleClient extends Component {
                         this.props.history.push("/aWildErrorHasAppeared");
                     })
 
-                // axios.get('/posts')
-                //     .then(res => {
-                //         console.log("comments", res.data);
-                //         this.setState({ historyPrice: res.data });
-                //     })
-                //     .catch(err => {
-                //         console.log(err);
-                //         this.props.history.push("/aWildErrorHasAppeared");
-                //     })
+                axios.get('/posts')
+                    .then(res =>
+                        this.setState({ tabData: res.data[1].body })
+                    )
+                    .catch(err => {
+                        console.log(err);
+                        this.props.history.push("/aWildErrorHasAppeared");
+                    })
             }
         }
+    }
+
+    changeTabHandler = (link, number, event) => {
+        let tab = event.target.value;
+        axios.get(link)
+            .then(res => {
+                this.setState({tabData: res.data[number].body, selectedTab: tab})
+            })
+            .catch(err => {
+                console.log(err);
+                this.props.history.push("/aWildErrorHasAppeared");
+            })
     }
 
     //fix
@@ -98,6 +111,8 @@ class SingleClient extends Component {
 
     render() {
         let output = <div> Sending Request </div>
+
+        let stats = <div> {this.state.tabData} </div>
         // if (!this.state.error){
         if (this.props.match.params.clientId) {
             output = <div> Loading...! </div>;
@@ -118,7 +133,23 @@ class SingleClient extends Component {
                             <div> Address: Street Number City PostalCode </div>
                         </div>
 
-                        <div className={classes.Info}>
+                        <div className={classes.Stats}>
+                            <button value={"select1"} onClick={this.changeTabHandler.bind(this, "/posts", 1)} className = { (this.state.selectedTab==="select1") ? classes.active : null }> select1 </button>
+                            <button value={"select2"} onClick={this.changeTabHandler.bind(this, "/posts", 2)} className = { (this.state.selectedTab==="select2") ? classes.active : null }> select2 </button>
+                            <button value={"select3"} onClick={this.changeTabHandler.bind(this, "/posts", 3)} className = { (this.state.selectedTab==="select3") ? classes.active : null }> select3 </button>
+                            <button value={"select4"} onClick={this.changeTabHandler.bind(this, "/posts", 4)} className = { (this.state.selectedTab==="select4") ? classes.active : null }> select4 </button>
+                            <button value={"select5"} onClick={this.changeTabHandler.bind(this, "/posts", 5)} className = { (this.state.selectedTab==="select5") ? classes.active : null }> select5 </button>
+                            <button value={"select6"} onClick={this.changeTabHandler.bind(this, "/posts", 6)} className = { (this.state.selectedTab==="select6") ? classes.active : null }> select6 </button>
+                            <button value={"select7"} onClick={this.changeTabHandler.bind(this, "/posts", 7)} className = { (this.state.selectedTab==="select7") ? classes.active : null }> select7 </button>
+
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <div> {stats} </div>
+                        </div>
+
+                        {/* <div className={classes.Info}>
                             <div> Popular products </div>
                         </div>
 
@@ -136,73 +167,73 @@ class SingleClient extends Component {
 
                         <div className={classes.Info}>
                             <div> Average Transactions per month </div>
-                        </div>
+                        </div> */}
 
                         {/* Make Not Dummy */}
                         <form className={classes.Form}>
                             <div className={classes.Title}> Change information </div>
 
                             <div>
-                            <label>Name: </label>
-                            <br />
-                            <input type="text" placeholder={"milk"} name="name" onChange={this.changeHandler} />
-                        </div>
-
-                        <div>
-                            <label>Date of Birth: </label>
-                            <br />
-                            <input type="date" name="date_of_birth" onChange={this.changeHandler} />
-                        </div>
-
-                        <div>
-                            <label>Phone: </label>
-                            <br />
-                            <input type="tel" maxLength={10} placeholder={"ex 210XXXXXXX"} name="phone" onChange={this.changeHandler} />
-                        </div>
-
-                        <div>
-                            <label>Points: </label>
-                            <br />
-                            <input type="number" placeholder={"10000"} name="points" onChange={this.changeHandler} />
-                        </div>
-
-
-                        <div>
-                            <label>Family members: </label>
-                            <br />
-                            <input type="number" placeholder={"2"} name="family_members" onChange={this.changeHandler} />
-                        </div>
-
-                        <div>
-                            <label>Pet: </label>
-                            <br />
-                            <input type="text" placeholder={"Dog"} name="pet" onChange={this.changeHandler} />
-                        </div>
-
-                        <div> Address
-                            <div>
-                                <label> Street: </label>
+                                <label>Name: </label>
                                 <br />
-                                <input type="text" placeholder={"Spirit"} name="street" onChange={this.changeHandler} />
-                                <br />
-                                <br />
-                                <label>Number: </label>
-                                <br />
-                                <input type="number" placeholder={"55"} name="number" onChange={this.changeHandler} />
-                                <br />
-                                <br />
-                                <label>City: </label>
-                                <br />
-                                <input type="text" placeholder={"Paradise"} name="city" onChange={this.changeHandler} />
-                                <br />
-                                <br />
-                                <label>Postal Code: </label>
-                                <br />
-                                <input type="number" maxLength={4} placeholder={"12149"} name="postal_code" onChange={this.changeHandler} />
-                                <br />
+                                <input type="text" placeholder={"Κώτσος"} name="name" onChange={this.changeHandler} />
                             </div>
-                        </div>
-                            
+
+                            <div>
+                                <label>Date of Birth: </label>
+                                <br />
+                                <input type="date" name="date_of_birth" onChange={this.changeHandler} />
+                            </div>
+
+                            <div>
+                                <label>Phone: </label>
+                                <br />
+                                <input type="tel" maxLength={10} placeholder={"ex 210XXXXXXX"} name="phone" onChange={this.changeHandler} />
+                            </div>
+
+                            <div>
+                                <label>Points: </label>
+                                <br />
+                                <input type="number" placeholder={"10000"} name="points" onChange={this.changeHandler} />
+                            </div>
+
+
+                            <div>
+                                <label>Family members: </label>
+                                <br />
+                                <input type="number" placeholder={"2"} name="family_members" onChange={this.changeHandler} />
+                            </div>
+
+                            <div>
+                                <label>Pet: </label>
+                                <br />
+                                <input type="text" placeholder={"Dog"} name="pet" onChange={this.changeHandler} />
+                            </div>
+
+                            <div> Address
+                            <div>
+                                    <label> Street: </label>
+                                    <br />
+                                    <input type="text" placeholder={"Spirit"} name="street" onChange={this.changeHandler} />
+                                    <br />
+                                    <br />
+                                    <label>Number: </label>
+                                    <br />
+                                    <input type="number" placeholder={"55"} name="number" onChange={this.changeHandler} />
+                                    <br />
+                                    <br />
+                                    <label>City: </label>
+                                    <br />
+                                    <input type="text" placeholder={"Paradise"} name="city" onChange={this.changeHandler} />
+                                    <br />
+                                    <br />
+                                    <label>Postal Code: </label>
+                                    <br />
+                                    <input type="number" maxLength={4} placeholder={"12149"} name="postal_code" onChange={this.changeHandler} />
+                                    <br />
+                                </div>
+                            </div>
+
                         </form>
 
                         <div className={classes.Buttons}>
