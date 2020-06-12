@@ -1,0 +1,94 @@
+.Title {
+    text-align: center;
+    font-size: 30px;
+}
+
+.Info {
+    border: 2px solid rgb(151, 216, 207);
+    border-radius: 27px;
+    box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.50);
+    margin-top: 30px;
+    padding: 20px;
+}
+
+.Form {
+    border: 2px solid rgb(151, 216, 207);
+    border-radius: 27px;
+    box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.50);
+    margin-top: 30px;
+    padding: 20px;
+}
+
+.Form input {
+    width: 30%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #333333;
+    border-radius: 4px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.Form div {
+    margin: 10px;
+}
+
+.Update {
+    border: 2px solid #333333;
+    color: #333333;
+    background-color: white;
+    height: 30px;
+    font-size: 15px;
+    position: absolute;
+    right: 0px;
+    top: 20px;
+    outline: none;
+    cursor: pointer;
+}
+
+.Update:hover {
+    color: rgb(151, 216, 207);
+    background-color: #333333;
+}
+
+.Delete {
+    border: 2px solid #333333;
+    color: #333333;
+    background-color: white;
+    height: 30px;
+    font-size: 15px;
+    position: absolute;
+    left: 0px;
+    top: 20px;
+    outline: none;
+    cursor: pointer;
+}
+
+.Delete:hover {
+    color: rgb(151, 216, 207);
+    background-color: #333333;
+}
+
+.Back {
+    border: 2px solid #333333;
+    color: #333333;
+    background-color: white;
+    height: 30px;
+    font-size: 15px;
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    outline: none;
+    cursor: pointer;
+}
+
+.Back:hover {
+    color: rgb(151, 216, 207);
+    background-color: #333333;
+}
+
+.Buttons {
+    height: 100px;
+    position: relative;
+}

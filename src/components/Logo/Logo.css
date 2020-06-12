@@ -1,0 +1,16 @@
+.Logo {
+    background-color: white;
+    padding: 8px;
+    height: 100%;
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+
+.Logo img {
+    height: 100%;
+}
+
+.Logo:hover {
+    background-color: rgb(151, 216, 207);
+    color: rgb(151, 216, 207);
+}

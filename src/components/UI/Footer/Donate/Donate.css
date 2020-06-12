@@ -1,0 +1,37 @@
+.Donate {
+    height: 70%;
+    width: 30%;
+    min-width: 200px;
+    color: rgb(151, 216, 207);
+    top: 0;
+    right: 10%;
+    border: 1px solid inherit;
+    position: absolute;
+    bottom: 0px;
+}
+
+.Text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    text-align: left;
+}
+
+.Text p {
+    font-size: 12px;
+}
+
+.Donate button {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    color: inherit;
+    background-color: #333333;
+    border: 1px solid #333333;
+    outline: none;
+    cursor: pointer;
+}
+
+.Donate button:hover {
+    border: 2px solid rgb(151, 216, 207);
+}

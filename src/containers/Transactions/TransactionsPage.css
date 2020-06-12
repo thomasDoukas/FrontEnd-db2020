@@ -1,0 +1,121 @@
+.Content {
+    margin-bottom: 10px;
+    margin-top: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    height: auto;
+    width: auto;
+    padding-bottom: 60px;
+    color: #333333;
+    text-align: center;
+    border: 2px solid rgb(151, 216, 207);
+    border-radius: 27px;
+    box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.50);
+    position: relative;
+}
+
+.Form {
+    margin-bottom: 10px;
+    margin-top: 30px;
+    margin-left: 20px;
+    margin-right: 20px;
+    height: auto;
+    width: auto;
+    padding-bottom: 60px;
+    color: #333333;
+    text-align: center;
+    border: 2px solid rgb(143, 252, 237);
+    border-radius: 27px;
+    box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.50);
+    position: relative;
+}
+
+.Title {
+    color: #333333;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    height: 5%;
+    text-align: center;
+    font-size: 20px;
+}
+
+.Add {
+    border: 2px solid #333333;
+    color: #333333;
+    background-color: white;
+    height: 30px;
+    font-size: 15px;
+    margin-top: 20px;
+}
+
+.Add:hover {
+    color: rgb(151, 216, 207);
+    background-color: #333333;
+}
+
+.Information {
+    margin: 20px;
+}
+
+.Information input {
+    width: 50%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #333333;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.Information select {
+    width: 50%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #333333;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.Information label {
+    position: absolute;
+    left: 25%;
+    margin: 0px;
+}
+
+.Buttons {
+    height: 100px;
+    position: relative;
+}
+
+.Back {
+    border: 2px solid #333333;
+    color: #333333;
+    background-color: white;
+    height: 30px;
+    font-size: 15px;
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+}
+
+.Back:hover {
+    color: rgb(151, 216, 207);
+    background-color: #333333;
+}
+
+.Update {
+    border: 2px solid #333333;
+    color: #333333;
+    background-color: white;
+    height: 30px;
+    font-size: 15px;
+    position: absolute;
+    right: 0px;
+    top: 20px;
+}
+
+.Update:hover {
+    color: rgb(151, 216, 207);
+    background-color: #333333;
+}

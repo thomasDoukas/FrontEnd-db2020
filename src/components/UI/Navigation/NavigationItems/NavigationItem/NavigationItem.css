@@ -1,0 +1,47 @@
+.NavigationItem {
+    height: 100%;
+    width: 100%;
+    min-width: 95px;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 0px;
+    padding: auto;
+    box-sizing: border-box;
+    display: flex;
+    background-color: inherit;
+    position: relative;
+}
+
+.NavigationItem a {
+    position: absolute;
+    right: 0;
+    height: 70%;
+    min-width: 100%;
+    margin: auto;
+    margin-right: 0px;
+    padding: auto;
+    padding-top: 8px;
+    color: white;
+    background-color: rebeccapurple;
+    text-decoration: none;
+    text-align: center;
+}
+
+.NavigationItem a {
+    color: white;
+    background-color: inherit;
+    position: absolute;
+}
+
+.NavigationItem a:hover {
+    color: rgb(151, 216, 207);
+    background-color: #202020;
+    border-bottom: rgb(151, 216, 207) solid;
+}
+
+.NavigationItem a:active,
+.NavigationItem a.active {
+    color: rgb(151, 216, 207);
+    background-color: #202020;
+    border-bottom: rgb(151, 216, 207) solid;
+}

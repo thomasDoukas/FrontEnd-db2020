@@ -1,0 +1,58 @@
+.Contact {
+    height: 70%;
+    width: 30%;
+    min-width: 500px;
+    color: rgb(151, 216, 207);
+    top: 0;
+    left: 10%;
+    border: 1px solid inherit;
+    position: absolute;
+    bottom: 0px;
+}
+
+.Text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    text-align: left;
+}
+
+.Text p {
+    font-size: 12px;
+}
+
+.Contact button {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    color: inherit;
+    background-color: #333333;
+    border: 1px solid #333333;
+    outline: none;
+    cursor: pointer;
+}
+
+.Contact button:hover {
+    border: 2px solid rgb(151, 216, 207);
+}
+
+.Email {
+    height: 15px;
+    width: 150px;
+    background-color: #333333;
+    color: rgb(151, 216, 207);
+    border: 2px solid rgb(151, 216, 207);
+    position: absolute;
+    top: 12px;
+    right: 15%;
+}
+.Message{
+    height: 45px;
+    width: 146px;
+    position: absolute;
+    top: 37px;
+    right: 15%;
+    background-color: #333333;
+    color: rgb(151, 216, 207);
+    border: 2px solid rgb(151, 216, 207);
+}

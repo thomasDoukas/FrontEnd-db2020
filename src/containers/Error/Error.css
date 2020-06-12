@@ -1,0 +1,33 @@
+.Content {
+    padding-bottom: 60px;
+    color: #333333;
+    text-align: center;
+    border: 2px solid rgb(151, 216, 207);
+    border-radius: 27px;
+    box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.50);
+    position: relative;
+}
+
+.Message {
+    margin: 30px;
+    font-size: 30px;
+}
+
+.Back {
+    border: 2px solid #333333;
+    color: #333333;
+    background-color: white;
+    height: 30px;
+    font-size: 15px;
+    margin: 20px;
+    position: absolute;
+    bottom: 0px;
+    right: 0%;
+    outline: none;
+    cursor: pointer;
+}
+
+.Back:hover {
+    color: rgb(151, 216, 207);
+    background-color: #333333;
+}

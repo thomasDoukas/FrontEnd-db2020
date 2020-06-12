@@ -1,0 +1,29 @@
+.Toolbar {
+    height: 80px;
+    top: 0;
+    width: 100%;
+    text-align: center;
+    background-color: #333333;
+    color: rgb(151, 216, 207);
+    display: inline-block;
+    position: relative;
+}
+
+.Toolbar nav {
+    margin: auto;
+    right: 20px;
+    bottom: 0;
+    height: 45%;
+    width: 40%;
+    position: absolute;
+    background-color: inherit;
+}
+
+.Logo {
+    bottom: 10%;
+    left: 10px;
+    height: 63px;
+    width: 63px;
+    position: absolute;
+    background-color: inherit;
+}
