@@ -15,16 +15,16 @@ class StoresPage extends Component {
         selectedStoreId: null,
     }
 
-    //Set URL /stores/getStoreList
     componentDidMount() {
-        axios.get('/posts')
-            .then(res =>
+        axios.get('/stores/getStoreList')
+            .then(res => {
+                console.log("/stores/getStoreList returns:", res.data);
                 this.setState({ stores: res.data })
-            )
-            .catch(err => {
-                console.log(err);
-                this.props.history.push("/aWildErrorHasAppeared");
             })
+            .catch(err => {
+                console.log("/stores/getStoreList error:", err.message);
+                this.props.history.push("/aWildErrorHasAppeared/" + err.message);
+            });
     }
 
     StoreSelectedHandler = (id) => {
@@ -33,38 +33,38 @@ class StoresPage extends Component {
 
     render() {
 
-        //what does the api return?? store.id=>
         const stores = this.state.stores.map(store => {
-            return (<Link to={"/Stores/" + store.id} key={store.id} style={{ textDecoration: 'none' }}>
+            return (<Link to={"/Stores/" + store.store_id} key={store.store_id} style={{ textDecoration: 'none' }}>
                 <ArrElement
-                    id={store.id}
+                    id={store.store_id}
                     firstTag={"Store id"}
                     secondTag={"Address"}
-                    body={store.body.slice(0, 21)}
-                    clicked={() => this.StoreSelectedHandler(store.id)}
+                    body={store.address}
+                    clicked={() => this.StoreSelectedHandler(store.store_id)}
                 />
             </Link>);
         })
 
-        // let output = <div> Something went wrong!!! </div>
-        // if (!this.state.error){
-        return (
-            <div className={classes.Content}>
+        let output = <div> Loading... </div>;
+        if (!this.state.stores) {
+            output = (
+                <div className={classes.Content}>
 
-                <Link to="/AddStore" > 
-                    <button className={classes.Add}> Add Store </button>
-                </Link>
+                    <Link to="/AddStore" >
+                        <button className={classes.Add}> Add Store </button>
+                    </Link>
 
-                <div className={classes.Title}>
-                    Or select one of the available stores:
-                </div >
+                    <div className={classes.Title}>
+                        Or select one of the available stores:
+                    </div >
 
-                <Arr> {stores} </Arr>
-            </div>
-        );
-        // }
+                    <Arr> {stores} </Arr>
+                </div>
+            )
+        }
 
-        // return output; 
+        return output;
+
     }
 }
 

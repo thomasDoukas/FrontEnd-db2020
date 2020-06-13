@@ -6,6 +6,13 @@ import classes from './ArrElement.css';
 // firstTag = text for id (store, barcode etc)
 //secondTag = text for body (address, name etc)
 const arrElement = (props) => {
+
+    let extraInfo = null;
+    if (props.thirdTag && props.secondaryBody){
+        extraInfo = <div> {props.thirdTag}: {props.secondaryBody} </div>
+    }
+    
+
     return (
         <div className={classes.Element} onClick={props.clicked}>
             <div>
@@ -14,6 +21,7 @@ const arrElement = (props) => {
             <div>
                 {props.secondTag}: {props.body}
             </div>
+            {extraInfo}
         </div>
     );
 }

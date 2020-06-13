@@ -3,11 +3,25 @@ import axios from '../../../axios.js';
 
 import classes from './AddStore.css';
 
-//Page of all stores in database
+//Add new store in database
 class AddStore extends Component {
 
+    // state = {
+    //     storeData: null
+    // }
+
     state = {
-        storeData: null
+        storeData: {
+            operating_hours: null,
+            phone: null,
+            size: null,
+            street: null,
+            number: null,
+            postal_code: null,
+            city: null
+        },
+        from: null,
+        to: null
     }
 
     backHandler = () => {
@@ -16,37 +30,41 @@ class AddStore extends Component {
 
     saveHandler = () => {
         const data = { ...this.state.storeData };
-        if (Object.keys(data).length < 8)
+        data["operating_hours"] = this.state.from + '-' + this.state.to;
+        if (Object.keys(data).length < 7)
             alert("Oops! To create a store you must specify all parameters.");
+        else if (data.phone <= 0 || data.phone.length < 10)
+            alert("Oops! Invalid phone number.");
         else if (data.size <= 0)
-            alert("Oops! Invalid store size.")
+            alert("Oops! Invalid store size.");
         else if (data.number <= 0)
-            alert("Oops! Invalid address number.")
-        else if ( data.postal_code <= 0)
-            alert("Oops! Invalid postal code.")
+            alert("Oops! Invalid street number.");
+        else if (data.postal_code <= 0)
+            alert("Oops! Invalid postal code.");
         else
-            axios.post('/postsssss', data)
+            axios.post('/createStore', data)
                 .then(res => {
-                    console.log(res);
-                    this.props.history.push("/Stores/" + res.data.id);  //what does post return
+                    console.log("/createStore returns: ", res.data);
+                    this.props.history.push("/Stores/" + res.data.id);
                 })
                 .catch(err => {
-                    console.log(err);
-                    this.props.history.push("/aWildErrorHasAppeared");
-                })
+                    console.log("/createStore error:", err.message);
+                    this.props.history.push("/aWildErrorHasAppeared/" + err.message);
+                });
     }
 
     changeHandler = (event) => {
         const data = { ...this.state.storeData };
-        data[event.target.name] = event.target.value;
+        if (event.target.name === "from")
+            this.setState({ from: event.target.value })
+        else if (event.target.name === "to")
+            this.setState({ to: event.target.value })
+        else
+            data[event.target.name] = event.target.value;
         this.setState({ storeData: data });
-        console.log(this.state.storeData);
-
     }
 
     render() {
-        console.log(this.state.storeData);
-
         let form = (
             <div className={classes.Content}>
                 <div className={classes.Title}>

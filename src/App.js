@@ -45,7 +45,7 @@ class App extends Component {
 
                 <Route path="/Statistics" exact component={StatisticsPage} />
 
-                <Route path="/aWildErrorHasAppeared" exact component={Error} />
+                <Route path="/aWildErrorHasAppeared/:errorMessage" exact component={Error} />
             </Layout>
         );
     }

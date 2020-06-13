@@ -3,12 +3,11 @@ import axios from '../../../axios.js';
 
 import classes from './SingleStore.css';
 
-//Page of all stores in database
+//Profile page for a store
 class SingleStore extends Component {
 
     state = {
         loadedStore: null,
-        // error: false,
         newData: null
     }
 
@@ -16,61 +15,61 @@ class SingleStore extends Component {
         this.loadData();
     }
 
-    // componentDidUpdate() {
-    //     this.loadData();
-    // }
-
     //Fetch data from db for selected store only
-    //Set URL /Stores/:store/getStore
     loadData() {
         if (this.props.match.params.storeId) {
             if (!this.state.loadedStore || (this.state.loadedStore && this.state.loadedStore.id !== +this.props.match.params.storeId)) {
-                console.log("inside loadData");
-                axios.get('/posts/' + this.props.match.params.storeId)
+                axios.get("/Stores/" + this.props.match.params.storeId + "/getStore")
                     .then(res => {
-                        console.log(res.data);
-                        this.setState({ loadedStore: res.data, newData: res.data});
+                        console.log("/Stores/:store/getStore returns: ", res.data);
+                        this.setState({ loadedStore: res.data });
                     })
                     .catch(err => {
-                        console.log(err);
-                        this.props.history.push("/aWildErrorHasAppeared");
-                    })
+                        console.log("/Stores/:store/getStore error:", err.message);
+                        this.props.history.push("/aWildErrorHasAppeared/" + err.message);
+                    });
             }
         }
     }
 
-    //fix
     deleteHandler = () => {
-        console.log("inside deleteHandler");
-        axios.delete('/postssss/' + this.props.match.params.storeId)
+        axios.delete("/Stores/" + this.props.match.params.storeId + "/deleteStore")
             .then(res => {
-                console.log(res);
+                console.log("/Stores/:store/deleteStore returns: ", res.data);
+                alert("Store has been successfully deleted.");
                 this.props.history.push("/Stores");
             })
             .catch(err => {
-                console.log(err);
-                this.props.history.push("/aWildErrorHasAppeared");
+                console.log("/Stores/:store/deleteStore error:", err.message);
+                this.props.history.push("/aWildErrorHasAppeared/" + err.message);
             });
     }
 
-    //fix
     updateHandler = () => {
-        console.log("Update Handler: ", this.state.newData);
         const data = this.state.newData;
-        // if (data === this.state.loadedStore)
-        //     alert("Information not changed! Mission abort.");
-        // else{
-        //===========================================================================Check if needed
-            axios.post('/postsssss', data)
-            .then( res => {
-                console.log(res);
-                this.props.history.push("/Stores/" + this.props.match.params.storeId);
-            })
-            .catch( err => {
-                console.log(err);
-                this.props.history.push("/aWildErrorHasAppeared");
-            })
-        // }
+        if (data === this.state.loadedStore)
+            alert("Oops! Information not changed!");
+            //what happens when the user presses submit without changing the default values in form???
+        else if (data.phone && ( data.phone <= 0 || data.phone.length < 10) )
+            alert("Oops! Invalid phone number.");
+        else if (data.size && data.size <= 0)
+            alert("Oops! Invalid store size.");
+        else if (data.number && data.number <= 0)
+            alert("Oops! Invalid street number.");
+        else if (data.postal_code && data.postal_code <= 0)
+            alert("Oops! Invalid postal code.");
+        else {
+            axios.post("/Stores/" + this.props.match.params.storeId + "/updateStore", data)
+                .then(res => {
+                    console.log("/Stores/:store/updateStore returns: ", res.data);
+                    alert("Store information have been successfully updated.");
+                    this.props.history.push("/Stores/" + res.data.store_id);
+                })
+                .catch(err => {
+                    console.log("/Stores/:store/updateStore error:", err.message);
+                    this.props.history.push("/aWildErrorHasAppeared" + err.message);
+                })
+        }
     }
 
     backHandler = () => {
@@ -78,76 +77,89 @@ class SingleStore extends Component {
     }
 
     changeHandler = (event) => {
-        console.log("CH before anything: ", this.state.newData);
         const data = { ...this.state.newData };
-        data[event.target.name] = event.target.value;
-        console.log("After assignment to data: ", data);
-        this.setState({ newData: data});
-        console.log("End of changeHandler: ", this.state.newData);
+        if (event.target.name === "from" || event.target.name === "to") {
+            let opHours = data["operating_hours"].split("-");
+            if (event.target.name === "from")
+                opHours[0] = event.target.value;
+            else if (event.target.name === "to")
+                opHours[1] = event.target.value;
+            opHours = opHours.join('-');
+            data["operating_hours"] = opHours;
+            this.setState({ newData: data })
+        }
+        else {
+            data[event.target.name] = event.target.value;
+            this.setState({ newData: data });
+        }
     }
 
     render() {
+
+        let address = this.state.loadedStore.number + ' ' + this.state.loadedStore.street + ', ' + this.state.loadedStore.city + ', ' + this.state.loadedStore.postal_code;
+        let operatingHours = this.state.operating_hours.split('-');
+        let from = operatingHours[0];
+        let to = operatingHours[1];
+
         let output = <div> Sending Request </div>
-        // if (!this.state.error){
         if (this.props.match.params.storeId) {
             output = <div> Loading...! </div>;
             if (this.state.loadedStore) {
                 output = (
                     <div>
                         <div className={classes.Title}>
-                            Information about Store:{this.state.loadedStore.id}
+                            Information about Store: {this.state.loadedStore.store_id}
                         </div>
 
                         <div className={classes.Info}>
-                            <div> Operating Hours: --:--:-- to --:--:--</div>
-                            <div> Contact Information: 210 XX XX XXX </div>
-                            <div> Store size: </div>
-                            <div> Address: Street Number City PostalCode </div>
+                            <div> Operating Hours: {this.state.loadedStore.operating_hours} </div>
+                            <div> Contact Information: {this.state.loadedStore.phone} </div>
+                            <div> Store size: {this.state.loadedStore.size} </div>
+                            <div> Address: {address} </div>
                         </div>
 
-                        {/* Make Not Dummy */}
                         <form className={classes.Form}>
                             <div className={classes.Title}> Change information </div>
 
                             <div className={classes.OpHours}>
                                 <label>Operating Hours: </label>
-                                <input type="time" defaultValue="09:00" name="from" onChange={this.changeHandler} />
+                                <input type="time" defaultValue={from} name="from" onChange={this.changeHandler} />
                                 <label> - </label>
-                                <input type="time" defaultValue="21:00" name="to" onChange={this.changeHandler} />
+                                <input type="time" defaultValue={to} name="to" onChange={this.changeHandler} />
                             </div>
 
                             <div>
                                 <label>Phone: </label>
                                 <br />
-                                <input type="tel" maxLength={10} defaultValue={"012346789"} name="phone" onChange={this.changeHandler} />
+                                <input type="tel" maxLength={10} defaultValue={this.state.loadedStore.phone} name="phone" onChange={this.changeHandler} />
                             </div>
 
                             <div>
                                 <label>Size: </label>
                                 <br />
-                                <input type="number" maxLength={4} defaultValue={"500"} name="size" onChange={this.changeHandler} />
+                                <input type="number" maxLength={4} defaultValue={this.state.loadedStore.size} name="size" onChange={this.changeHandler} />
                             </div>
 
                             <div> Address
                                 <div>
                                     <label>Street: </label>
                                     <br />
-                                    <input type="text" defaultValue={"RandomSt"} name="street" onChange={this.changeHandler} />
+                                    <input type="text" defaultValue={this.state.loadedStore.street} name="street" onChange={this.changeHandler} />
                                     <br />
                                     <br />
                                     <label>Number: </label>
                                     <br />
-                                    <input type="number" defaultValue={"27"} name="number" onChange={this.changeHandler} />
+                                    <input type="number" defaultValue={this.state.loadedStore.number} name="number" onChange={this.changeHandler} />
                                     <br />
                                     <br />
                                     <label>City: </label>
                                     <br />
-                                    <input type="text" defaultValue={"Paradise"} name="city" onChange={this.changeHandler} />
+                                    <input type="text" defaultValue={this.state.loadedStore.city} name="city" onChange={this.changeHandler} />
                                     <br />
                                     <br />
                                     <label>Postal Code: </label>
                                     <br />
-                                    <input type="number" maxLength={4} defaultValue={"12223"} name="postal_code" onChange={this.changeHandler} />
+                                    <input type="number" maxLength={4} defaultValue={this.state.loadedStore.postal_code} name="postal_code" onChange={this.changeHandler} />
                                     <br />
                                 </div>
                             </div>
@@ -163,7 +175,6 @@ class SingleStore extends Component {
                 )
             }
         }
-        // }
         return output;
     }
 }

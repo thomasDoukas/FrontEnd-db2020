@@ -12,13 +12,12 @@ class StatisticsPage extends Component {
     }
 
     componentDidMount() {
-        axios.get('/posts')
+        axios.get('/postsss')
             .then(res =>
                 this.setState({ tabData: res.data[1].body })
             )
             .catch(err => {
-                console.log(err);
-                this.props.history.push("/aWildErrorHasAppeared");
+                this.props.history.push("/aWildErrorHasAppeared/" + err.message);
             })
     }
 
