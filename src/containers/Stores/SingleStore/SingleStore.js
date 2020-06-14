@@ -22,7 +22,7 @@ class SingleStore extends Component {
                 axios.get("/stores/" + this.props.match.params.storeId)
                     .then(res => {
                         console.log("get /stores/:store returns: ", res.data);
-                        this.setState({ loadedStore: res.data });
+                        this.setState({ loadedStore: res.data, newData: res.data });
                     })
                     .catch(err => {
                         console.log("get /stores/:store error:", err.message);
@@ -47,29 +47,41 @@ class SingleStore extends Component {
 
     updateHandler = () => {
         const data = this.state.newData;
-        if (data === this.state.loadedStore)
-            alert("Oops! Information not changed!");
-            //what happens when the user presses submit without changing the default values in form???
-        else if (data.phone && ( data.phone <= 0 || data.phone.length < 10) )
-            alert("Oops! Invalid phone number.");
-        else if (data.size && data.size <= 0)
-            alert("Oops! Invalid store size.");
-        else if (data.number && data.number <= 0)
-            alert("Oops! Invalid street number.");
-        else if (data.postal_code && data.postal_code <= 0)
-            alert("Oops! Invalid postal code.");
-        else {
-            axios.put("/stores/" + this.props.match.params.StoreId, data)
-                .then(res => {
-                    console.log("put /stores/:store returns: ", res.data);
-                    alert("Store information successfully updated.");
-                    this.props.history.push("/Stores/" + res.data.store_id);
-                })
-                .catch(err => {
-                    console.log("put /stores/:store error:", err.message);
-                    this.props.history.push("/aWildErrorHasAppeared" + err.message);
-                })
+
+        let isReady = true;
+        //Check newData for empty strings
+        for (var member in data) {
+            if (data[member] === "")
+                isReady = false;
         }
+
+        if (isReady) {
+            if (data === this.state.loadedStore)
+                alert("Oops! Information not changed!");
+            else if (data.phone && (data.phone <= 0 || data.phone.length < 10))
+                alert("Oops! Invalid phone number.");
+            else if (data.size && data.size <= 0)
+                alert("Oops! Invalid store size.");
+            else if (data.number && data.number <= 0)
+                alert("Oops! Invalid street number.");
+            else if (data.postal_code && data.postal_code <= 0)
+                alert("Oops! Invalid postal code.");
+            else {
+                axios.put("/stores/" + this.props.match.params.StoreId, data)
+                    .then(res => {
+                        console.log("put /stores/:store returns: ", res.data);
+                        alert("Store information successfully updated.");
+                        this.props.history.push("/Stores/" + res.data.store_id);
+                    })
+                    .catch(err => {
+                        console.log("put /stores/:store error:", err.message);
+                        this.props.history.push("/aWildErrorHasAppeared" + err.message);
+                    })
+            }
+        }
+        else
+            alert("Oops! Looks like something is empty");
+
     }
 
     backHandler = () => {

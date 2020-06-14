@@ -25,7 +25,7 @@ class SingleClient extends Component {
                 axios.get('/clients/' + this.props.match.params.clientId)
                     .then(res => {
                         console.log("get /clients/:client returns: ", res.data);
-                        this.setState({ loadedClient: res.data });
+                        this.setState({ loadedClient: res.data, newData: res.data });
                     })
                     .catch(err => {
                         console.log("get /clients/:client error: ", err.message);
@@ -71,30 +71,42 @@ class SingleClient extends Component {
 
     updateHandler = () => {
         const data = this.state.newData;
-        if (data === this.state.loadedProduct)
-            alert("Information not changed! Mission abort.");
-        else if (data.phone && data.phone <= 0)
-            alert("Oops! Invalid client phone")
-        else if (data.number && data.number <= 0)
-            alert("Oops! Invalid address number.")
-        else if (data.postal_code && data.postal_code <= 0)
-            alert("Oops! Invalid postal code.")
-        else if (data.points && data.points < 0)
-            alert("Oops! Invalid points number.")
-        else if (data.family_members && data.family_members < 0)
-            alert("Oops! Invalid postal code.")
-        else {
-            axios.post('/clients/' + this.props.match.params.ClientId, data)
-                .then(res => {
-                    console.log("post /clients/:client returns", res.data);
-                    alert("Client information successfully updated.");
-                    this.props.history.push("/Clients/" + res.data.card);
-                })
-                .catch(err => {
-                    console.log("post /clients/:client error", err.message);
-                    this.props.history.push("/aWildErrorHasAppeared/" + err.message);
-                })
+
+        let isReady = true;
+        //Check newData for empty strings
+        for (var member in data) {
+            if (data[member] === "")
+                isReady = false;
         }
+
+        if (isReady) {
+            if (data === this.state.loadedProduct)
+                alert("Information not changed! Mission abort.");
+            else if (data.phone && data.phone <= 0)
+                alert("Oops! Invalid client phone")
+            else if (data.number && data.number <= 0)
+                alert("Oops! Invalid address number.")
+            else if (data.postal_code && data.postal_code <= 0)
+                alert("Oops! Invalid postal code.")
+            else if (data.points && data.points < 0)
+                alert("Oops! Invalid points number.")
+            else if (data.family_members && data.family_members < 0)
+                alert("Oops! Invalid postal code.")
+            else {
+                axios.post('/clients/' + this.props.match.params.ClientId, data)
+                    .then(res => {
+                        console.log("post /clients/:client returns", res.data);
+                        alert("Client information successfully updated.");
+                        this.props.history.push("/Clients/" + res.data.card);
+                    })
+                    .catch(err => {
+                        console.log("post /clients/:client error", err.message);
+                        this.props.history.push("/aWildErrorHasAppeared/" + err.message);
+                    })
+            }
+        }
+        else
+        alert("Oops! Looks like something is empty");
     }
 
     backHandler = () => {

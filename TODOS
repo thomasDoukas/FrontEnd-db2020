@@ -1,8 +1,6 @@
     output Price History in products
     requests and output in client tabs
 
-    
-    what happens when the user presses submit in update without changing the default values?
     what happens when the user deletes one input and then presses submit (empty string in state value)?
     GENERALLY CHECK UPDATE HANDLERS (send everything? send only what the user types)
 

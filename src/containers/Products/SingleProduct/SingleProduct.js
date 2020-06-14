@@ -23,7 +23,7 @@ class SingleProduct extends Component {
                 axios.get('/products/' + this.props.match.params.productId)
                     .then(res => {
                         console.log("get /products/:product returns", res.data);
-                        this.setState({ loadedProduct: res.data });
+                        this.setState({ loadedProduct: res.data, newData: res.data });
                     })
                     .catch(err => {
                         console.log("get /products/:product error: ", err.message);
@@ -57,24 +57,35 @@ class SingleProduct extends Component {
     }
 
     updateHandler = () => {
-        console.log("Update Handler: ", this.state.newData);
         const data = this.state.newData;
-        if (data === this.state.loadedProduct)
-            alert("Oops! Information not changed.");
-        else if (data.price && data.price <= 0)
-            alert("Oops! Invalid product price");
-        else {
-        axios.put('/products/' + this.props.match.params.productId, data)
-            .then(res => {
-                console.log("put /products/:product returns: ", res.data);
-                alert("Product information successfully updated.")
-                this.props.history.push("/Products/" + this.props.match.params.productId);
-            })
-            .catch(err => {
-                console.log("put /products/:product error: ", err.message);
-                this.props.history.push("/aWildErrorHasAppeared/" + err.message);
-            })
+
+        let isReady = true;
+        //Check newData for empty strings
+        for (var member in data) {
+            if (data[member] === "")
+                isReady = false;
         }
+
+        if (isReady) {
+            if (data === this.state.loadedProduct)
+                alert("Oops! Information not changed.");
+            else if (data.price && data.price <= 0)
+                alert("Oops! Invalid product price");
+            else {
+                axios.put('/products/' + this.props.match.params.productId, data)
+                    .then(res => {
+                        console.log("put /products/:product returns: ", res.data);
+                        alert("Product information successfully updated.")
+                        this.props.history.push("/Products/" + this.props.match.params.productId);
+                    })
+                    .catch(err => {
+                        console.log("put /products/:product error: ", err.message);
+                        this.props.history.push("/aWildErrorHasAppeared/" + err.message);
+                    })
+            }
+        }
+        else
+            alert("Oops! Looks like something is empty");
     }
 
     backHandler = () => {
