@@ -21,11 +21,11 @@ class SingleStore extends Component {
             if (!this.state.loadedStore || (this.state.loadedStore && this.state.loadedStore.id !== +this.props.match.params.storeId)) {
                 axios.get("/stores/" + this.props.match.params.storeId)
                     .then(res => {
-                        console.log("/Stores/:store returns: ", res.data);
+                        console.log("get /stores/:store returns: ", res.data);
                         this.setState({ loadedStore: res.data });
                     })
                     .catch(err => {
-                        console.log("/Stores/:store error:", err.message);
+                        console.log("get /stores/:store error:", err.message);
                         this.props.history.push("/aWildErrorHasAppeared/" + err.message);
                     });
             }
@@ -35,12 +35,12 @@ class SingleStore extends Component {
     deleteHandler = () => {
         axios.delete("/stores/" + this.props.match.params.storeId)
             .then(res => {
-                console.log("/Stores/:store returns: ", res.data);
+                console.log("delete /stores/:store returns: ", res.data);
                 alert("Store has been successfully deleted.");
                 this.props.history.push("/Stores");
             })
             .catch(err => {
-                console.log("/Stores/:store error:", err.message);
+                console.log(" delete /stores/:store error:", err.message);
                 this.props.history.push("/aWildErrorHasAppeared/" + err.message);
             });
     }
@@ -61,12 +61,12 @@ class SingleStore extends Component {
         else {
             axios.put("/stores/" + this.props.match.params.storeId, data)
                 .then(res => {
-                    console.log("/Stores/:store returns: ", res.data);
-                    alert("Store information have been successfully updated.");
+                    console.log("put /stores/:store returns: ", res.data);
+                    alert("Store information successfully updated.");
                     this.props.history.push("/Stores/" + res.data.store_id);
                 })
                 .catch(err => {
-                    console.log("/Stores/:store error:", err.message);
+                    console.log("put /stores/:store error:", err.message);
                     this.props.history.push("/aWildErrorHasAppeared" + err.message);
                 })
         }
@@ -103,7 +103,7 @@ class SingleStore extends Component {
 
         let output = <div> Sending Request </div>
         if (this.props.match.params.storeId) {
-            output = <div> Loading...! </div>;
+            output = <div> Loading... </div>;
             if (this.state.loadedStore) {
                 output = (
                     <div>

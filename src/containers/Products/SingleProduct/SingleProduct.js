@@ -8,7 +8,6 @@ class SingleProduct extends Component {
 
     state = {
         loadedProduct: null,
-        // error: false,
         newData: null,
         historyPrice: null
     }
@@ -17,71 +16,65 @@ class SingleProduct extends Component {
         this.loadData();
     }
 
-    // componentDidUpdate() {
-    //     this.loadData();
-    // }
-
     //Fetch data from db for selected store only
-    //Set URL /Stores/:store/getStore
     loadData() {
         if (this.props.match.params.productId) {
-            if (!this.state.loadedProduct || (this.state.loadedProduct && this.state.loadedProduct.id !== +this.props.match.params.productId)) {
-                console.log("inside loadData");
-                axios.get('/posts/' + this.props.match.params.productId)
+            if (!this.state.loadedProduct || (this.state.loadedProduct && this.state.loadedProduct.barcode !== +this.props.match.params.productId)) {
+                axios.get('/products/' + this.props.match.params.productId)
                     .then(res => {
-                        console.log(res.data);
-                        this.setState({ loadedProduct: res.data, newData: res.data });
+                        console.log("get /products/:product returns", res.data);
+                        this.setState({ loadedProduct: res.data });
                     })
                     .catch(err => {
-                        console.log(err);
-                        this.props.history.push("/aWildErrorHasAppeared");
+                        console.log("get /products/:product error: ", err.message);
+                        this.props.history.push("/aWildErrorHasAppeared/" + err.message);
                     })
 
-                axios.get('/posts')
+                axios.get('/product/' + this.props.match.params.productId + '/history')
                     .then(res => {
-                        console.log("comments", res.data);
+                        console.log("get /products/:product/history returns: ", res.data);
                         this.setState({ historyPrice: res.data });
                     })
                     .catch(err => {
-                        console.log(err);
-                        this.props.history.push("/aWildErrorHasAppeared");
+                        console.log("get /products/:product/history returns: ", err.message);
+                        this.props.history.push("/aWildErrorHasAppeared/" + err.message);
                     })
             }
         }
     }
 
-    //fix
     deleteHandler = () => {
-        console.log("inside deleteHandler");
-        axios.delete('/postssss/' + this.props.match.params.productId)
+        axios.delete('/products/' + this.props.match.params.productId)
             .then(res => {
-                console.log(res);
+                console.log("delete /products/:product returns: ", res.data);
+                alert("Product has been successfully deleted.");
                 this.props.history.push("/Products");
             })
             .catch(err => {
-                console.log(err);
-                this.props.history.push("/aWildErrorHasAppeared");
+                console.log("delete /products/:product error: ", err.message);
+                this.props.history.push("/aWildErrorHasAppeared/" + err.message);
             });
     }
 
-    //fix
     updateHandler = () => {
         console.log("Update Handler: ", this.state.newData);
         const data = this.state.newData;
-        // if (data === this.state.loadedProduct)
-        //     alert("Information not changed! Mission abort.");
-        // else {
-        //===========================================================================Check if needed
-        axios.post('/postsssss', data)
+        if (data === this.state.loadedProduct)
+            alert("Oops! Information not changed.");
+        else if (data.price <= 0)
+            alert("Oops! Invalid product price");
+        else {
+        axios.put('/products/' + this.props.match.params.productId, data)
             .then(res => {
-                console.log(res);
+                console.log("put /products/:product returns: ", res.data);
+                alert("Product information successfully updated.")
                 this.props.history.push("/Products/" + this.props.match.params.productId);
             })
             .catch(err => {
-                console.log(err);
-                this.props.history.push("/aWildErrorHasAppeared");
+                console.log("put /products/:product error: ", err.message);
+                this.props.history.push("/aWildErrorHasAppeared/" + err.message);
             })
-        // }
+        }
     }
 
     backHandler = () => {
@@ -89,35 +82,37 @@ class SingleProduct extends Component {
     }
 
     changeHandler = (event) => {
-        console.log("CH before anything: ", this.state.newData);
         const data = { ...this.state.newData };
         data[event.target.name] = event.target.value;
-        console.log("After assignment to data: ", data);
         this.setState({ newData: data });
-        console.log("End of changeHandler: ", this.state.newData);
     }
 
     render() {
         let output = <div> Sending Request </div>
-        // if (!this.state.error){
+
+        let historyPrice = <div> Loading ... </div>
+        /* fix with ArrElement and map in historyPrice */
+        if (this.state.historyPrice)
+            historyPrice = <div> HistoryPrice will be displayed here </div>
+
         if (this.props.match.params.productId) {
-            output = <div> Loading...! </div>;
+            output = <div> Loading... </div>;
             if (this.state.loadedProduct) {
                 output = (
                     <div>
                         <div className={classes.Title}>
-                            Information about Product:{this.state.loadedProduct.id}
+                            Information about Product: {this.state.loadedProduct.barcode}
                         </div>
 
                         <div className={classes.Info}>
-                            <div> Name: SomeName</div>
-                            <div> Brand name: SomeBrand</div>
-                            <div> Price: 1$ </div>
-                            <div> First transaction: 22/12/20 </div>
+                            <div> Name: {this.state.loadedProduct.name} </div>
+                            <div> Brand name: {this.state.loadedProduct.brand_name} </div>
+                            <div> Price: {this.state.loadedProduct.price} </div>
+                            <div> First transaction: {this.state.loadedProduct.first_transaction} </div>
                         </div>
 
                         <div className={classes.Info}>
-                            <div> HistoryPrice </div>
+                            {historyPrice}
                         </div>
 
                         {/* Make Not Dummy */}
@@ -139,7 +134,7 @@ class SingleProduct extends Component {
                             <div>
                                 <label>Brand Name: </label>
                                 <br />
-                                <input type="text" placeholder={"example brand"} name="brand_name" onChange={this.changeHandler} />
+                                <input type="text" placeholder={"ex Brand"} name="brand_name" onChange={this.changeHandler} />
                             </div>
 
                             <div>
@@ -159,7 +154,6 @@ class SingleProduct extends Component {
                 )
             }
         }
-        // }
         return output;
     }
 }

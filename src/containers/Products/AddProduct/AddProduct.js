@@ -3,11 +3,20 @@ import axios from '../../../axios.js';
 
 import classes from './AddProduct.css';
 
-//Page of all stores in database
+//Add new product in database
 class AddProduct extends Component {
 
     state = {
         productData: null
+    }
+    state = {
+        productData: {
+            barcode: null,
+            price: null,
+            name: null,
+            brand_name: null,
+            first_transaction: null
+        }
     }
 
     backHandler = () => {
@@ -19,17 +28,16 @@ class AddProduct extends Component {
         if (Object.keys(data).length < 4)
             alert("Oops! To create a product you must specify all parameters.");
         else if (data.price <= 0)
-            alert("Oops! Invalid product price")
+            alert("Oops! Invalid product price");
         else {
-            console.log("After save", data);
-            axios.post('/postsAfterSave', data)
+            axios.post('/products', data)
                 .then(res => {
-                    console.log(res);
-                    this.props.history.push("/Products/" + res.data.id); //what does post return
+                    console.log("/products returns: ", res.data);
+                    this.props.history.push("/Products/" + res.data.barcode);
                 })
                 .catch(err => {
-                    console.log(err);
-                    this.props.history.push("/aWildErrorHasAppeared");
+                    console.log("/products error: ", err.message);
+                    this.props.history.push("/aWildErrorHasAppeared/" + err.message);
                 })
         }
     }
@@ -38,12 +46,9 @@ class AddProduct extends Component {
         const data = { ...this.state.productData };
         data[event.target.name] = event.target.value;
         this.setState({ productData: data });
-        console.log(this.state.productData);
-
     }
 
     render() {
-        console.log(this.state.productData);
 
         let form = (
             <div className={classes.Content}>
@@ -62,15 +67,15 @@ class AddProduct extends Component {
                         </div>
 
                         <div>
-                            <label>Price: </label>
-                            <br />
-                            <input type="number" maxLength={5} placeholder={"ex 12.99"} name="price" onChange={this.changeHandler} />
-                        </div>
-
-                        <div>
                             <label>Brand Name: </label>
                             <br />
                             <input type="text" placeholder={"example brand"} name="brand_name" onChange={this.changeHandler} />
+                        </div>
+
+                        <div>
+                            <label>Price: </label>
+                            <br />
+                            <input type="number" maxLength={5} placeholder={"ex 12.99"} name="price" onChange={this.changeHandler} />
                         </div>
 
                         <div>

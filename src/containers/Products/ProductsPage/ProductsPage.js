@@ -7,7 +7,7 @@ import Arr from '../../../components/Arr/Arr.js';
 
 import classes from './ProductsPage.css';
 
-//Page of all stores in database
+//Page of all products in database
 class ProductsPage extends Component {
 
     state = {
@@ -15,15 +15,15 @@ class ProductsPage extends Component {
         selectedProductId: null,
     }
 
-    //Set URL /stores/getStoreList
     componentDidMount() {
-        axios.get('/posts')
-            .then(res =>
-                this.setState({ products: res.data })
-            )
+        axios.get('/products')
+            .then(res => {
+                console.log("/products returns: ", res.data);
+                this.setState({ products: res.data });
+            })
             .catch(err => {
-                console.log(err);
-                this.props.history.push("/aWildErrorHasAppeared");
+                console.log("/products error: ", err.message);
+                this.props.history.push("/aWildErrorHasAppeared/" + err.message);
             })
     }
 
@@ -33,38 +33,39 @@ class ProductsPage extends Component {
 
     render() {
 
-        //what does the api return?? store.id=>
         const products = this.state.products.map(product => {
-            return (<Link to={"/Products/" + product.id} key={product.id} style={{ textDecoration: 'none' }}>
+            return (<Link to={"/Products/" + product.barcode} key={product.barcode} style={{ textDecoration: 'none' }}>
                 <ArrElement
-                    id={product.id}
                     firstTag={"Barcode"}
+                    id={product.barcode}
                     secondTag={"Product Name"}
-                    body={product.body.slice(0, 21)}
-                    clicked={() => this.StoreSelectedHandler(product.id)}
+                    body={product.name}
+                    thirdTag={"Brand Name"}
+                    secondaryBody={product.brand_name}
+                    clicked={() => this.StoreSelectedHandler(product.barcode)}
                 />
             </Link>);
         })
 
-        // let output = <div> Something went wrong!!! </div>
-        // if (!this.state.error){
-        return (
-            <div className={classes.Content}>
+        let output = <div> Loading... </div>
+        if (!this.state.products) {
+            output = (
+                <div className={classes.Content}>
 
-                <Link to="/AddProduct" > 
-                    <button className={classes.Add}> Add Product </button>
-                </Link>
+                    <Link to="/AddProduct" >
+                        <button className={classes.Add}> Add Product </button>
+                    </Link>
 
-                <div className={classes.Title}>
-                    Or select one of the available products:
+                    <div className={classes.Title}>
+                        Or select one of the available products:
                 </div >
 
-                <Arr> {products} </Arr>
-            </div>
-        );
-        // }
+                    <Arr> {products} </Arr>
+                </div>
+            )
+        }
+        return output;
 
-        // return output; 
     }
 }
 

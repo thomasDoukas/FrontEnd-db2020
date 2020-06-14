@@ -36,8 +36,8 @@ class StoresPage extends Component {
         const stores = this.state.stores.map(store => {
             return (<Link to={"/Stores/" + store.store_id} key={store.store_id} style={{ textDecoration: 'none' }}>
                 <ArrElement
-                    id={store.store_id}
                     firstTag={"Store id"}
+                    id={store.store_id}
                     secondTag={"Address"}
                     body={store.address}
                     clicked={() => this.StoreSelectedHandler(store.store_id)}
