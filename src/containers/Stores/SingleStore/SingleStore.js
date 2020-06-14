@@ -40,7 +40,7 @@ class SingleStore extends Component {
                 this.props.history.push("/Stores");
             })
             .catch(err => {
-                console.log(" delete /stores/:store error:", err.message);
+                console.log("delete /stores/:store error:", err.message);
                 this.props.history.push("/aWildErrorHasAppeared/" + err.message);
             });
     }
@@ -59,7 +59,7 @@ class SingleStore extends Component {
         else if (data.postal_code && data.postal_code <= 0)
             alert("Oops! Invalid postal code.");
         else {
-            axios.put("/stores/" + this.props.match.params.storeId, data)
+            axios.put("/stores/" + this.props.match.params.StoreId, data)
                 .then(res => {
                     console.log("put /stores/:store returns: ", res.data);
                     alert("Store information successfully updated.");
@@ -96,7 +96,7 @@ class SingleStore extends Component {
 
     render() {
 
-        let address = this.state.loadedStore.number + ' ' + this.state.loadedStore.street + ', ' + this.state.loadedStore.city + ', ' + this.state.loadedStore.postal_code;
+        let address = this.state.loadedStore.number + ' ' + this.state.loadedStore.street + 'St, ' + this.state.loadedStore.city + ', ' + this.state.loadedStore.postal_code;
         let operatingHours = this.state.operating_hours.split('-');
         let from = operatingHours[0];
         let to = operatingHours[1];

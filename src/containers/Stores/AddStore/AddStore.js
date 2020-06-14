@@ -45,7 +45,7 @@ class AddStore extends Component {
             axios.post('/stores', data)
                 .then(res => {
                     console.log("/stores returns: ", res.data);
-                    this.props.history.push("/Stores/" + res.data.id);
+                    this.props.history.push("/Stores/" + res.data.store_id);
                 })
                 .catch(err => {
                     console.log("/stores error:", err.message);

@@ -61,7 +61,7 @@ class SingleProduct extends Component {
         const data = this.state.newData;
         if (data === this.state.loadedProduct)
             alert("Oops! Information not changed.");
-        else if (data.price <= 0)
+        else if (data.price && data.price <= 0)
             alert("Oops! Invalid product price");
         else {
         axios.put('/products/' + this.props.match.params.productId, data)

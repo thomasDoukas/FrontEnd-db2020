@@ -170,7 +170,7 @@ class TransactionsPage extends Component {
                                     <label>Payment method: </label>
                                     <br />
                                     <select name="payment_method" onChange={this.changeHandler} value={this.state.formData.payment_method}>
-                                        <option calue={"noInfo"}> NoInfo </option>
+                                        <option value={"noInfo"}> NoInfo </option>
                                         <option value={"cash"}> Cash </option>
                                         <option value={"creditCard"}> Credit Card </option>
                                     </select>

@@ -34,12 +34,15 @@ class StoresPage extends Component {
     render() {
 
         const stores = this.state.stores.map(store => {
+        let address = store.number + ' ' + store.street + 'St, ' + store.city + ', ' + store.postal_code;
+
+
             return (<Link to={"/Stores/" + store.store_id} key={store.store_id} style={{ textDecoration: 'none' }}>
                 <ArrElement
                     firstTag={"Store id"}
                     id={store.store_id}
                     secondTag={"Address"}
-                    body={store.address}
+                    body={address}
                     clicked={() => this.StoreSelectedHandler(store.store_id)}
                 />
             </Link>);

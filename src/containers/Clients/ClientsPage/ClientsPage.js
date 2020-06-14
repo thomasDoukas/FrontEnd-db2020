@@ -7,7 +7,7 @@ import Arr from '../../../components/Arr/Arr.js';
 
 import classes from './ClientsPage.css';
 
-//Page of all stores in database
+//Page of all clients in database
 class ClientsPage extends Component {
 
     state = {
@@ -15,56 +15,59 @@ class ClientsPage extends Component {
         selectedClientId: null,
     }
 
-    //Set URL /stores/getStoreList
     componentDidMount() {
-        axios.get('/posts')
-            .then(res =>
+        axios.get('/clients')
+            .then(res => {
+                console.log("get /clients returns: ", res.data);
                 this.setState({ clients: res.data })
-            )
+            })
             .catch(err => {
-                console.log(err);
-                this.props.history.push("/aWildErrorHasAppeared");
+                console.log("get /clients error: ", err.message);
+                this.props.history.push("/aWildErrorHasAppeared/" + err.message);
             })
     }
 
-    StoreSelectedHandler = (id) => {
+    ClientSelectedHandler = (id) => {
         this.setState({ selectedClientId: id });
     }
 
     render() {
 
-        //what does the api return?? store.id=>
         const clients = this.state.clients.map(client => {
-            return (<Link to={"/Clients/" + client.id} key={client.id} style={{ textDecoration: 'none' }}>
+            let address = client.number + ' ' + client.street + ' St, ' + client.city + ', ' + client.postal_code;
+
+            return (<Link to={"/Clients/" + client.card} key={client.card} style={{ textDecoration: 'none' }}>
                 <ArrElement
-                    id={client.id}
                     firstTag={"Card Number"}
+                    id={client.card}
                     secondTag={"Client Name"}
-                    body={client.body.slice(0, 21)}
-                    clicked={() => this.StoreSelectedHandler(client.id)}
+                    body={client.name}
+                    thirdTag={"Address"}
+                    body={address}
+                    clicked={() => this.ClientSelectedHandler(client.id)}
                 />
             </Link>);
         })
 
-        // let output = <div> Something went wrong!!! </div>
-        // if (!this.state.error){
-        return (
-            <div className={classes.Content}>
+        let output = <div> Loading... </div>
+        if (!this.state.clients) {
+            output = (
+                <div className={classes.Content}>
 
-                <Link to="/AddClient" > 
-                    <button className={classes.Add}> Add Client </button>
-                </Link>
+                    <Link to="/AddClient" >
+                        <button className={classes.Add}> Add Client </button>
+                    </Link>
 
-                <div className={classes.Title}>
-                    Or select one of the available clients:
+                    <div className={classes.Title}>
+                        Or select one of the available clients:
                 </div >
 
-                <Arr> {clients} </Arr>
-            </div>
-        );
-        // }
+                    <Arr> {clients} </Arr>
+                </div>
+            );
+        }
 
-        // return output; 
+        return output; 
     }
 }
 

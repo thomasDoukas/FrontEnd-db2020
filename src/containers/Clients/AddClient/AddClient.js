@@ -3,11 +3,26 @@ import axios from '../../../axios.js';
 
 import classes from './AddClient.css';
 
-//Page of all stores in database
+//Add new client in database
 class AddClient extends Component {
 
+    // state = {
+    //     clientData: null
+    // }
+
     state = {
-        clientData: null
+        clientData: {
+            name: null,
+            date_of_birth: null,
+            points: null,
+            phone: null,
+            pet: null,
+            family_members: null,
+            street: null,
+            number: null,
+            postal_code: null,
+            city: null
+        }
     }
 
     backHandler = () => {
@@ -26,18 +41,17 @@ class AddClient extends Component {
             alert("Oops! Invalid postal code.")
         else if (data.points < 0)
             alert("Oops! Invalid points number.")
-        else if (data.family_members<= 0)
+        else if (data.family_members < 0)
             alert("Oops! Invalid postal code.")
         else {
-            console.log("After save", data);
-            axios.post('/postsAfterSave', data)
+            axios.post('/clients', data)
                 .then(res => {
-                    console.log(res);
-                    this.props.history.push("/Clients/" + res.data.id); //what does post return
+                    console.log("post /clients returns: ", res.data);
+                    this.props.history.push("/Clients/" + res.data.card);
                 })
                 .catch(err => {
-                    console.log(err);
-                    this.props.history.push("/aWildErrorHasAppeared");
+                    console.log("post /clients error: ", err.message);
+                    this.props.history.push("/aWildErrorHasAppeared/" + err.message);
                 })
         }
     }
@@ -46,11 +60,9 @@ class AddClient extends Component {
         const data = { ...this.state.clientData };
         data[event.target.name] = event.target.value;
         this.setState({ clientData: data });
-        console.log(this.state.clientData);
     }
 
     render() {
-        console.log(this.state.clientData);
 
         let form = (
             <div className={classes.Content}>
@@ -97,6 +109,18 @@ class AddClient extends Component {
                             <label>Pet: </label>
                             <br />
                             <input type="text" placeholder={"Dog"} name="pet" onChange={this.changeHandler} />
+                        </div>
+
+                        <div>
+                            <label>Pet: </label>
+                            <br />
+                            <select name="pet" onChange={this.changeHandler}>
+                                <option value={null}> No Pet </option>
+                                <option value={"cat"}> Cat </option>
+                                <option value={"bird"}> Bird </option>
+                                <option value={"dog"}> Dog </option>
+                                <option value={"fish"}> Fish </option>
+                            </select>
                         </div>
 
                         <br />
