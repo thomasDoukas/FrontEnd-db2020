@@ -9,7 +9,7 @@ class SingleClient extends Component {
     state = {
         loadedClient: null,
         newData: null,
-        selectedTab: "select1",
+        selectedTab: "favouriteProducts",
         tabData: null
     }
 
@@ -32,27 +32,29 @@ class SingleClient extends Component {
                         this.props.history.push("/aWildErrorHasAppeared/" + err.message);
                     })
                 //Data for tab1
-                axios.get('/posts')
-                    .then(res =>
-                        this.setState({ tabData: res.data[1].body })
-                    )
+                axios.get('/clients/' + this.props.match.params.clientId + '/transactions/favourite')
+                    .then(res => {
+                        console.log("get /clients/:client/transactions/favourite returns: ", res.data);
+                        this.setState({ tabData: res.data })
+                    })
                     .catch(err => {
-                        console.log(err);
-                        this.props.history.push("/aWildErrorHasAppeared");
+                        console.log("get /clients/:client/transactions/favourite error: ", err.message);
+                        this.props.history.push("/aWildErrorHasAppeared/" + err.message);
                     })
             }
         }
     }
 
-    changeTabHandler = (link, number, event) => {
+    changeTabHandler = (link, event) => {
         let tab = event.target.value;
-        axios.get(link)
+        axios.get('/clients/' + this.props.match.params.clientId + '/transactions' + link)
             .then(res => {
-                this.setState({ tabData: res.data[number].body, selectedTab: tab })
+                console.log("get /clients/:client/transactions", link, "returns: ", res.data);
+                this.setState({ tabData: res.data, selectedTab: tab })
             })
             .catch(err => {
-                console.log(err);
-                this.props.history.push("/aWildErrorHasAppeared");
+                console.log("get /clients/:client/transactions", link, "error: ", err.message);
+                this.props.history.push("/aWildErrorHasAppeared/" + err.message);
             })
     }
 
@@ -106,7 +108,7 @@ class SingleClient extends Component {
             }
         }
         else
-        alert("Oops! Looks like something is empty");
+            alert("Oops! Looks like something is empty");
     }
 
     backHandler = () => {
@@ -122,11 +124,36 @@ class SingleClient extends Component {
     render() {
         let output = <div> Sending Request </div>
         let address = this.state.loadedClient.number + ' ' + this.state.loadedClient.street + ' St, ' + this.state.loadedClient.city + ', ' + this.state.loadedClient.postal_code;
-        let stats = <div> {this.state.tabData} </div>
+
+        let stats = <div> Loading </div>
 
         if (this.props.match.params.clientId) {
             output = <div> Loading...! </div>;
             if (this.state.loadedClient) {
+
+                if (this.state.tabData) {
+                    switch (this.state.selectedTab) {
+                        case "favouriteProducts":
+                            stats = <div> favouriteProducts </div>
+                            break;
+                        case "visitedStores":
+                            stats = <div> visitedStores </div>
+                            break;
+                        case "visitingHours":
+                            stats = <div> visitingHours </div>
+                            break;
+                        case "avgWeekTransactions":
+                            stats = <div> avgWeekTransactions </div>
+                            break;
+                        case "avgMonthTransactions":
+                            stats = <div> avgMonthTransactions </div>
+                            break;
+                        default:
+                            stats = <div> If you see this you should take a break and rethink about your life choices :) </div>;
+                            stats = <div> How did you get here? There is nothing for you to see! Leave. </div>
+                    }
+                }
+
                 output = (
                     <div>
                         <div className={classes.Title}>
@@ -144,13 +171,11 @@ class SingleClient extends Component {
                         </div>
 
                         <div className={classes.Stats}>
-                            <button value={"select1"} onClick={this.changeTabHandler.bind(this, "/posts", 1)} className={(this.state.selectedTab === "select1") ? classes.active : null}> select1 </button>
-                            <button value={"select2"} onClick={this.changeTabHandler.bind(this, "/posts", 2)} className={(this.state.selectedTab === "select2") ? classes.active : null}> select2 </button>
-                            <button value={"select3"} onClick={this.changeTabHandler.bind(this, "/posts", 3)} className={(this.state.selectedTab === "select3") ? classes.active : null}> select3 </button>
-                            <button value={"select4"} onClick={this.changeTabHandler.bind(this, "/posts", 4)} className={(this.state.selectedTab === "select4") ? classes.active : null}> select4 </button>
-                            <button value={"select5"} onClick={this.changeTabHandler.bind(this, "/posts", 5)} className={(this.state.selectedTab === "select5") ? classes.active : null}> select5 </button>
-                            <button value={"select6"} onClick={this.changeTabHandler.bind(this, "/posts", 6)} className={(this.state.selectedTab === "select6") ? classes.active : null}> select6 </button>
-                            <button value={"select7"} onClick={this.changeTabHandler.bind(this, "/posts", 7)} className={(this.state.selectedTab === "select7") ? classes.active : null}> select7 </button>
+                            <button value={"favouriteProducts"} onClick={this.changeTabHandler.bind(this, "/favourite")} className={(this.state.selectedTab === "favouriteProducts") ? classes.active : null}> Favourite Products </button>
+                            <button value={"visitedStores"} onClick={this.changeTabHandler.bind(this, "/stores")} className={(this.state.selectedTab === "visitedStores") ? classes.active : null}> Visited Stores </button>
+                            <button value={"visitingHours"} onClick={this.changeTabHandler.bind(this, "/hours")} className={(this.state.selectedTab === "visitingHours") ? classes.active : null}> Visiting Hours </button>
+                            <button value={"avgWeekTransactions"} onClick={this.changeTabHandler.bind(this, "/average")} className={(this.state.selectedTab === "avgWeekTransactions") ? classes.active : null}> Average Week Transactions </button>
+                            <button value={"avgMonthTransactions"} onClick={this.changeTabHandler.bind(this, "/average")} className={(this.state.selectedTab === "avgMonthTransactions") ? classes.active : null}> Average Month Transactions </button>
 
                             <br />
                             <br />
@@ -158,26 +183,6 @@ class SingleClient extends Component {
                             <br />
                             <div> {stats} </div>
                         </div>
-
-                        {/* <div className={classes.Info}>
-                            <div> Popular products </div>
-                        </div>
-
-                        <div className={classes.Info}>
-                            <div> Stores </div>
-                        </div>
-
-                        <div className={classes.Info}>
-                            <div> Hours For Stores </div>
-                        </div>
-
-                        <div className={classes.Info}>
-                            <div> Average Transactions per week </div>
-                        </div>
-
-                        <div className={classes.Info}>
-                            <div> Average Transactions per month </div>
-                        </div> */}
 
                         <form className={classes.Form}>
                             <div className={classes.Title}> Change information </div>
