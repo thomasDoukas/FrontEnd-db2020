@@ -6,9 +6,9 @@ import classes from './AddProduct.css';
 //Add new product in database
 class AddProduct extends Component {
 
-    state = {
-        productData: null
-    }
+    // state = {
+    //     productData: null
+    // }
     state = {
         productData: {
             barcode: null,

@@ -3,7 +3,7 @@ import axios from '../../../axios.js';
 
 import classes from './SingleProduct.css';
 
-//Page of all stores in database
+//Profile page for a product
 class SingleProduct extends Component {
 
     state = {
@@ -115,32 +115,31 @@ class SingleProduct extends Component {
                             {historyPrice}
                         </div>
 
-                        {/* Make Not Dummy */}
                         <form className={classes.Form}>
                             <div className={classes.Title}> Change information </div>
 
                             <div>
                                 <label>Name: </label>
                                 <br />
-                                <input type="text" placeholder={"milk"} name="name" onChange={this.changeHandler} />
+                                <input type="text" defaultValue={this.state.loadedProduct.name} name="name" onChange={this.changeHandler} />
                             </div>
 
                             <div>
                                 <label>Price: </label>
                                 <br />
-                                <input type="number" maxLength={5} placeholder={"ex 12.99"} name="price" onChange={this.changeHandler} />
+                                <input type="number" maxLength={5} defaultValue={this.state.loadedProduct.price} name="price" onChange={this.changeHandler} />
                             </div>
 
                             <div>
                                 <label>Brand Name: </label>
                                 <br />
-                                <input type="text" placeholder={"ex Brand"} name="brand_name" onChange={this.changeHandler} />
+                                <input type="text" defaultValue={this.state.loadedProduct.brand_name} name="brand_name" onChange={this.changeHandler} />
                             </div>
 
                             <div>
                                 <label>First Transaction: </label>
                                 <br />
-                                <input type="date" name="first_transaction" onChange={this.changeHandler} />
+                                <input type="date" defaultValue={this.state.loadedProduct.first_transaction} name="first_transaction" onChange={this.changeHandler} />
                             </div>
                         </form>
 
