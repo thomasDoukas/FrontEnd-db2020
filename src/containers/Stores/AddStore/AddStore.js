@@ -42,13 +42,13 @@ class AddStore extends Component {
         else if (data.postal_code <= 0)
             alert("Oops! Invalid postal code.");
         else
-            axios.post('/createStore', data)
+            axios.post('/stores', data)
                 .then(res => {
-                    console.log("/createStore returns: ", res.data);
+                    console.log("/stores returns: ", res.data);
                     this.props.history.push("/Stores/" + res.data.id);
                 })
                 .catch(err => {
-                    console.log("/createStore error:", err.message);
+                    console.log("/stores error:", err.message);
                     this.props.history.push("/aWildErrorHasAppeared/" + err.message);
                 });
     }

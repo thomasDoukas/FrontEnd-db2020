@@ -28,6 +28,7 @@ class App extends Component {
             <Layout>
                 <Route path="/" exact component={HomePage} />
 
+                {/* Stores may be ready */}
                 <Route path="/Stores" exact component={StoresPage} />
                 <Route path="/AddStore" exact component={AddStore} />
                 <Route path="/Stores/:storeId" exact component={SingleStore} />

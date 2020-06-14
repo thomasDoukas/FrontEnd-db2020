@@ -16,13 +16,13 @@ class StoresPage extends Component {
     }
 
     componentDidMount() {
-        axios.get('/stores/getStoreList')
+        axios.get('/stores')
             .then(res => {
-                console.log("/stores/getStoreList returns:", res.data);
+                console.log("/stores returns:", res.data);
                 this.setState({ stores: res.data })
             })
             .catch(err => {
-                console.log("/stores/getStoreList error:", err.message);
+                console.log("/stores error:", err.message);
                 this.props.history.push("/aWildErrorHasAppeared/" + err.message);
             });
     }

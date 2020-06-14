@@ -19,13 +19,13 @@ class SingleStore extends Component {
     loadData() {
         if (this.props.match.params.storeId) {
             if (!this.state.loadedStore || (this.state.loadedStore && this.state.loadedStore.id !== +this.props.match.params.storeId)) {
-                axios.get("/Stores/" + this.props.match.params.storeId + "/getStore")
+                axios.get("/stores/" + this.props.match.params.storeId)
                     .then(res => {
-                        console.log("/Stores/:store/getStore returns: ", res.data);
+                        console.log("/Stores/:store returns: ", res.data);
                         this.setState({ loadedStore: res.data });
                     })
                     .catch(err => {
-                        console.log("/Stores/:store/getStore error:", err.message);
+                        console.log("/Stores/:store error:", err.message);
                         this.props.history.push("/aWildErrorHasAppeared/" + err.message);
                     });
             }
@@ -33,14 +33,14 @@ class SingleStore extends Component {
     }
 
     deleteHandler = () => {
-        axios.delete("/Stores/" + this.props.match.params.storeId + "/deleteStore")
+        axios.delete("/stores/" + this.props.match.params.storeId)
             .then(res => {
-                console.log("/Stores/:store/deleteStore returns: ", res.data);
+                console.log("/Stores/:store returns: ", res.data);
                 alert("Store has been successfully deleted.");
                 this.props.history.push("/Stores");
             })
             .catch(err => {
-                console.log("/Stores/:store/deleteStore error:", err.message);
+                console.log("/Stores/:store error:", err.message);
                 this.props.history.push("/aWildErrorHasAppeared/" + err.message);
             });
     }
@@ -59,14 +59,14 @@ class SingleStore extends Component {
         else if (data.postal_code && data.postal_code <= 0)
             alert("Oops! Invalid postal code.");
         else {
-            axios.post("/Stores/" + this.props.match.params.storeId + "/updateStore", data)
+            axios.put("/stores/" + this.props.match.params.storeId, data)
                 .then(res => {
-                    console.log("/Stores/:store/updateStore returns: ", res.data);
+                    console.log("/Stores/:store returns: ", res.data);
                     alert("Store information have been successfully updated.");
                     this.props.history.push("/Stores/" + res.data.store_id);
                 })
                 .catch(err => {
-                    console.log("/Stores/:store/updateStore error:", err.message);
+                    console.log("/Stores/:store error:", err.message);
                     this.props.history.push("/aWildErrorHasAppeared" + err.message);
                 })
         }
