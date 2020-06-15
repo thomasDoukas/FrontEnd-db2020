@@ -149,7 +149,6 @@ class SingleClient extends Component {
                             stats = <div> avgMonthTransactions </div>
                             break;
                         default:
-                            stats = <div> If you see this you should take a break and rethink about your life choices :) </div>;
                             stats = <div> How did you get here? There is nothing for you to see! Leave. </div>
                     }
                 }
@@ -171,11 +170,41 @@ class SingleClient extends Component {
                         </div>
 
                         <div className={classes.Stats}>
-                            <button value={"favouriteProducts"} onClick={this.changeTabHandler.bind(this, "/favourite")} className={(this.state.selectedTab === "favouriteProducts") ? classes.active : null}> Favourite Products </button>
-                            <button value={"visitedStores"} onClick={this.changeTabHandler.bind(this, "/stores")} className={(this.state.selectedTab === "visitedStores") ? classes.active : null}> Visited Stores </button>
-                            <button value={"visitingHours"} onClick={this.changeTabHandler.bind(this, "/hours")} className={(this.state.selectedTab === "visitingHours") ? classes.active : null}> Visiting Hours </button>
-                            <button value={"avgWeekTransactions"} onClick={this.changeTabHandler.bind(this, "/average")} className={(this.state.selectedTab === "avgWeekTransactions") ? classes.active : null}> Average Week Transactions </button>
-                            <button value={"avgMonthTransactions"} onClick={this.changeTabHandler.bind(this, "/average")} className={(this.state.selectedTab === "avgMonthTransactions") ? classes.active : null}> Average Month Transactions </button>
+                            <button value={"favouriteProducts"}
+                                onClick={this.changeTabHandler.bind(this, "/favourite")}
+                                className={(this.state.selectedTab === "favouriteProducts") ? classes.active : null}
+                            >
+                                Favourite Products
+                            </button>
+
+                            <button value={"visitedStores"}
+                                onClick={this.changeTabHandler.bind(this, "/stores")}
+                                className={(this.state.selectedTab === "visitedStores") ? classes.active : null}
+                            >
+                                Visited Stores
+                            </button>
+
+                            <button value={"visitingHours"}
+                                onClick={this.changeTabHandler.bind(this, "/hours")}
+                                className={(this.state.selectedTab === "visitingHours") ? classes.active : null}
+                            >
+                                Visiting Hours
+                            </button>
+
+                            <button value={"avgWeekTransactions"}
+                                onClick={this.changeTabHandler.bind(this, "/average")}
+                                className={(this.state.selectedTab === "avgWeekTransactions") ? classes.active : null}
+                            >
+                                Week Transactions
+                            </button>
+
+                            <button value={"avgMonthTransactions"}
+                                onClick={this.changeTabHandler.bind(this, "/average")}
+                                className={(this.state.selectedTab === "avgMonthTransactions") ? classes.active : null}
+                            >
+                                Month Transactions
+                            </button>
+
 
                             <br />
                             <br />
