@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Slider } from '@material-ui/core';
 import axios from '../../axios.js';
 
 import ArrElement from '../../components/Arr/ArrElement/ArrElement.js';
@@ -6,111 +7,167 @@ import Arr from '../../components/Arr/Arr.js';
 
 import classes from './TransactionsPage.css';
 
-//Page of all stores in database
+//Transaction form
 class TransactionsPage extends Component {
 
     state = {
         stores: [],
         formIsReady: false,
         formData: {
-            selectedStoreId: null,
-            date: null,
-            time: null,
-            total_pieces: null,
-            total_amount: null,
-            payment_method: "noInfo",
-            productCategory: null
+            selectedStoreId: 1,
+            fromDate: "",
+            toDate: "",
+            fromTime: "",
+            toTime: "",
+            total_pieces: 0,
+            total_amount: [0, 0],
+            payment_method: "noInfo"
         },
         result: null
     }
 
     //Set URL /stores/getStoreList
     componentDidMount() {
-        axios.get('/posts')
-            .then(res =>
+        axios.get('/stores')
+            .then(res => {
+                console.log("get /stores returns: ", res.data);
                 this.setState({ stores: res.data })
-            )
+            })
             .catch(err => {
-                console.log(err);
-                this.props.history.push("/aWildErrorHasAppeared");
+                console.log("get /stores error: ", err.message);
+                //this.props.history.push("/aWildErrorHasAppeared/" + err.message);
             })
     }
 
-    StoreSelectedHandler = (id) => {
+    //Handler for selecting one of the available stores
+    storeSelectedHandler = (id) => {
         let data = { ...this.state.formData };
         data.selectedStoreId = id;
         this.setState({ formData: data });
     }
 
+    //General onChange event handler
     changeHandler = (event) => {
+        if (event.target.name === "fromDate") {
+            const data = { ...this.state.formData };
+            data.fromDate = event.target.value;
+            data.toDate = event.target.value;
+            this.setState({ formData: data });
+            console.log("inside");
+
+        }
+        else {
+            const data = { ...this.state.formData };
+            data[event.target.name] = event.target.value;
+            this.setState({ formData: data });
+        }
+    }
+
+    //Handler for slider from material ui
+    sliderHandler = (event, value) => {
         const data = { ...this.state.formData };
-        data[event.target.name] = event.target.value;
+        data[event.target.id] = value;
         this.setState({ formData: data });
     }
 
+    //Event handler - setting up the total_pieces slider manually 
+    changePiecesHandler = (event) => {
+        //Limiting the input value
+        let value = Number(event.target.value);
+        if (event.target.value < 0)
+            value = 0;
+        else if (event.target.value > 20)
+            value = 20;
+        const data = { ...this.state.formData };
+        data[event.target.name] = value;
+        this.setState({ formData: data });
+    }
+
+    //Event handler - setting up the total_amount slider manually 
+    changeAmountHandler = (event) => {
+        //Limiting the input value
+        let value = Number(event.target.value);
+        if (value < 0)
+            value = 0;
+        else if (value > 300)
+            value = 300;
+        const newData = { ...this.state.formData }
+        const data = this.state.formData.total_amount;
+        if (event.target.name === "total_amount_min") {
+            // min value cannot be greater than max
+            if (value > data[1])
+                value = data[1];
+            data[0] = value;
+            newData.total_amount = data;
+            this.setState({ formData: newData });
+        }
+        else if (event.target.name === "total_amount_max") {
+            // max value cannot be less than min
+            if (value < data[0])
+                value = data[0];
+            data[1] = value;
+            newData.total_amount = data;
+            this.setState({ formData: newData });
+        }
+        else
+            console.log("Hopefully you will never see this!");
+    }
+
+    //Go to previous page
     backHandler = () => {
         this.props.history.goBack();
     }
 
+    // Reset the form in initial state
     backToFormHandler = () => {
         const nullifyData = { ...this.state.formData }
-        for (var prop in nullifyData) {
-            if (nullifyData.hasOwnProperty(prop)) {
-                nullifyData[prop] = null;
-            }
-        }
+        nullifyData.selectedStoreId = null;
+        nullifyData.payment_method = "noInfo";
+        nullifyData.total_pieces = 0;
+        nullifyData.total_amount = [0, 0];
+        nullifyData.fromDate = "";
+        nullifyData.toDate = "";
+        nullifyData.fromTime = "";
+        nullifyData.toTime = "";
         this.setState({ result: null, formData: nullifyData });
     }
 
+    // Send request. Check if parameters are of right values
     submitHandler = () => {
         if (this.state.formData.selectedStoreId === null)
             alert("Oops! You must select a store to continue.");
-        else if (this.state.total_amount < 0)
-            alert("Oops! total")
         else {
-            console.log("inside submit handler");
             const data = this.state.formData;
             console.log(data);
-            // axios.post('/posts', data)
-            //     .then(res =>
-            //         this.setState({ result: res.data })
-            //     )
-            //     .catch(err => {
-            //         console.log(err);
-            //         this.props.history.push("/aWildErrorHasAppeared");
-            //     })
-            axios.get('/posts')
+            axios.get('/transactions')
                 .then(res => {
-                    console.log("Fetching result", res)
-                    this.setState({ result: res.data[1].body })
+                    console.log("get /transactions returns: ", res)
+                    this.setState({ result: res.data })
                 })
                 .catch(err => {
-                    console.log(err);
-                    this.props.history.push("/aWildErrorHasAppeared");
+                    console.log("get /transactions error: ", err)
+                    // this.props.history.push("/aWildErrorHasAppeared/" + err.message);
                 })
         }
     }
 
     render() {
 
-        //what does the api return?? store.id=>
         const stores = this.state.stores.map(store => {
+            let address = store.number + ' ' + store.street + 'St, ' + store.city + ', ' + store.postal_code;
             return (
                 <ArrElement
-                    key={store.id}
-                    id={store.id}
+                    key={store.store_id}
                     firstTag={"Store id"}
+                    id={store.store_id}
                     secondTag={"Address"}
-                    body={store.body.slice(0, 21)}
-                    clicked={() => this.StoreSelectedHandler(store.id)}
+                    body={address}
+                    clicked={() => this.storeSelectedHandler(store.id)}
                 />
             );
         })
 
         let isStoreSelected = (this.state.formData.selectedStoreId !== null) ? `You have selected store: ${this.state.formData.selectedStoreId}` : "You have not selected any store";
-
-        // let output = <div> Something went wrong!!! </div>
-        // if (!this.state.error){
 
         let output = <div> Loading... </div>;
         if (!this.state.result) {
@@ -119,52 +176,40 @@ class TransactionsPage extends Component {
                     <div className={classes.Content}>
                         <div className={classes.Title}>
                             Select one of the available stores:
-                    </div >
+                        </div >
 
                         <Arr> {stores} </Arr>
                     </div>
 
-                    <div className={classes.Form}>
+                    <div className={classes.Content}>
                         <div className={classes.Title}>
                             Please Complete the following form:
-                    </div >
+                        </div >
 
-                        <div>
+                        <div className={classes.Title}>
                             {isStoreSelected}
+                            <br />
+                            <br />
+                            <br />
                         </div>
 
                         <form>
+
+                            <div className={classes.Window}>
+                                <label>Date: </label>
+                                <input type="date" name="fromDate" value={this.state.formData.fromDate} onChange={this.changeHandler} />
+                                <label> - </label>
+                                <input type="date" name="toDate" value={this.state.formData.toDate} onChange={this.changeHandler} />
+                            </div>
+
+                            {/* <div className={classes.Window}>
+                                <label>Time: </label>
+                                <input type="time" name="fromTime" value={this.state.formData.fromTime} onChange={this.changeHandler} />
+                                <label> - </label>
+                                <input type="time" name="toTime" value={this.state.formData.toTime} onChange={this.changeHandler} />
+                            </div> */}
+
                             <div className={classes.Information}>
-
-                                <div>
-                                    <label>Date: </label>
-                                    <br />
-                                    <input type="date" name="date" onChange={this.changeHandler} />
-                                </div>
-
-                                <div>
-                                    <label>Time: </label>
-                                    <br />
-                                    <input type="time" name="time" onChange={this.changeHandler} />
-                                </div>
-
-                                <div>
-                                    <label>Product Category: </label>
-                                    <br />
-                                    <input type="text" placeholder={"ex: Dairy"} name="productCategory" onChange={this.changeHandler} />
-                                </div>
-
-                                <div>
-                                    <label>Quantity: </label>
-                                    <br />
-                                    <input type="number" placeholder={"2"} name="total_pieces" onChange={this.changeHandler} />
-                                </div>
-
-                                <div>
-                                    <label>Total cost: </label>
-                                    <br />
-                                    <input type="number" placeholder={"20"} name="total_amount" onChange={this.changeHandler} />
-                                </div>
 
                                 <div>
                                     <label>Payment method: </label>
@@ -176,8 +221,45 @@ class TransactionsPage extends Component {
                                     </select>
                                 </div>
 
+                                <div className={classes.Range}>
+                                    <label>Quantity: </label>
+                                    <br />
+                                    <div className={classes.Slider}>
+                                        <Slider
+                                            value={this.state.formData.total_pieces}
+                                            id={"total_pieces"}
+                                            min={0}
+                                            max={20}
+                                            onChange={this.sliderHandler}
+                                            valueLabelDisplay="auto"
+                                        />
+                                    </div>
+                                    <input type="number" maxLength={2} value={this.state.formData.total_pieces} name="total_pieces" onChange={this.changePiecesHandler} />
+                                </div>
+
+                                <div className={classes.Range}>
+                                    <label>Total Cost: </label>
+                                    <div className={classes.Slider}>
+                                        <Slider
+                                            value={this.state.formData.total_amount}
+                                            id={"total_amount"}
+                                            min={0}
+                                            max={300}
+                                            onChange={this.sliderHandler}
+                                            valueLabelDisplay="auto"
+                                        />
+                                    </div>
+                                    {(this.state.formData.total_amount[0] > 0) ?
+                                        <input type="number" maxLength={3} value={this.state.formData.total_amount[0]} name="total_amount_min" onChange={this.changeAmountHandler} />
+                                        : null}
+                                    <input type="number" maxLength={3} value={this.state.formData.total_amount[1]} name="total_amount_max" onChange={this.changeAmountHandler} />
+                                </div>
+
                             </div>
                         </form>
+
+                        <button onClick={this.backToFormHandler} className={classes.ResetForm}> Reset Form </button>
+
                     </div>
 
                     <div className={classes.Buttons}>
@@ -201,9 +283,6 @@ class TransactionsPage extends Component {
             output
         );
 
-        // }
-
-        // return output; 
     }
 }
 

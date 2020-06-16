@@ -2,5 +2,10 @@
     requests and output in client tabs
 
     what happens when the user deletes one input and then presses submit (empty string in state value)?
+    what about date and time - change in all forms
     GENERALLY CHECK UPDATE HANDLERS (send everything? send only what the user types)
-
+    add outline: none in all form inputs
+    add reset form button in all forms
+    add toggle in transactions 
+        new mode will also include category_id in form
+        in old mode fix quantity (add second ball in slider - copy from total_amount)
