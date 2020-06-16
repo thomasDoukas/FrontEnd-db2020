@@ -43,7 +43,7 @@ class ClientsPage extends Component {
                     secondTag={"Client Name"}
                     body={client.name}
                     thirdTag={"Address"}
-                    body={address}
+                    secondaryBody={address}
                     clicked={() => this.ClientSelectedHandler(client.id)}
                 />
             </Link>);

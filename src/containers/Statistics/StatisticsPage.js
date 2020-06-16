@@ -40,33 +40,33 @@ class StatisticsPage extends Component {
     render() {
 
         let output = <div> Loading... </div>;
-        output = <div> {this.state.tabData} </div>
+        // output = <div> {this.state.tabData} </div>
 
         if (this.state.tabData) {
             switch (this.state.selectedTab) {
                 case "productCouples":
-                    stats = <div> productCouples </div>
+                    output = <div> productCouples </div>
                     break;
                 case "famousLocations":
-                    stats = <div> famousLocations </div>
+                    output = <div> famousLocations </div>
                     break;
                 case "houseProducts":
-                    stats = <div> houseProducts </div>
+                    output = <div> houseProducts </div>
                     break;
                 case "fruitfulTimes":
-                    stats = <div> fruitfulTimes </div>
+                    output = <div> fruitfulTimes </div>
                     break;
                 case "ageGroupPerHour":
-                    stats = <div> ageGroupPerHour </div>
+                    output = <div> ageGroupPerHour </div>
                     break;
                 case "SpecialStats1":
-                    stats = <div> SpecialStats1 </div>
+                    output = <div> SpecialStats1 </div>
                     break;
                 case "SpecialStats2":
-                    stats = <div> SpecialStats2 </div>
+                    output = <div> SpecialStats2 </div>
                     break;
                 default:
-                    stats = <div> You again? There is NOTHING here. </div>
+                    output = <div> You again? There is NOTHING here. </div>
             }
         }
 
@@ -74,7 +74,7 @@ class StatisticsPage extends Component {
             <div className={classes.Content}>
                 <button
                     value={"productCouples"}
-                    onClick={this.changeTabHandler.bind(this, "/hot-couples", 1)}
+                    onClick={this.changeTabHandler.bind(this, "/hot-couples")}
                     className={(this.state.selectedTab === "productCouples") ? classes.active : null}
                 >
                     Famous Product Couples
@@ -82,7 +82,7 @@ class StatisticsPage extends Component {
 
                 <button
                     value={"famousLocations"}
-                    onClick={this.changeTabHandler.bind(this, "/location", 3)}
+                    onClick={this.changeTabHandler.bind(this, "/location")}
                     className={(this.state.selectedTab === "famousLocations") ? classes.active : null}
                 >
                     Famous Store Locations
@@ -90,7 +90,7 @@ class StatisticsPage extends Component {
 
                 <button
                     value={"houseProducts"}
-                    onClick={this.changeTabHandler.bind(this, "/house", 2)}
+                    onClick={this.changeTabHandler.bind(this, "/house")}
                     className={(this.state.selectedTab === "houseProducts") ? classes.active : null}
                 >
                     House Products
@@ -98,7 +98,7 @@ class StatisticsPage extends Component {
 
                 <button
                     value={"fruitfulTimes"}
-                    onClick={this.changeTabHandler.bind(this, "/rush-hour", 4)}
+                    onClick={this.changeTabHandler.bind(this, "/rush-hour")}
                     className={(this.state.selectedTab === "fruitfulTimes") ? classes.active : null}
                 >
                     Fruitful Times
@@ -106,7 +106,7 @@ class StatisticsPage extends Component {
 
                 <button
                     value={"ageGroupPerHour"}
-                    onClick={this.changeTabHandler.bind(this, "/posts", 5)}
+                    onClick={this.changeTabHandler.bind(this, "/age-time")}
                     className={(this.state.selectedTab === "ageGroupPerHour") ? classes.active : null}
                 >
                     Age Group per Hour
@@ -114,7 +114,7 @@ class StatisticsPage extends Component {
 
                 <button
                     value={"SpecialStats1"}
-                    onClick={this.changeTabHandler.bind(this, "/special1", 6)}
+                    onClick={this.changeTabHandler.bind(this, "/special1")}
                     className={(this.state.selectedTab === "SpecialStats1") ? classes.active : null}
                 >
                     select6
@@ -122,7 +122,7 @@ class StatisticsPage extends Component {
 
                 <button
                     value={"SpecialStats2"}
-                    onClick={this.changeTabHandler.bind(this, "/special2", 7)}
+                    onClick={this.changeTabHandler.bind(this, "/special2")}
                     className={(this.state.selectedTab === "SpecialStats2") ? classes.active : null}
                 >
                     select7
