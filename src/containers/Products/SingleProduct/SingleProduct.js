@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from '../../../axios.js';
 
+import ArrElement from '../../../components/Arr/ArrElement/ArrElement.js';
+
 import classes from './SingleProduct.css';
 
 //Profile page for a product
@@ -9,21 +11,42 @@ class SingleProduct extends Component {
     state = {
         loadedProduct: null,
         newData: null,
-        historyPrice: null
-    }
-
-    componentDidMount() {
-        this.loadData();
+        historyPrice: null,
+        oldCatNum: 0,
+        catNum: 0
     }
 
     //Fetch data from db for selected store only
-    loadData() {
+    componentDidMount() {
         if (this.props.match.params.productId) {
             if (!this.state.loadedProduct || (this.state.loadedProduct && this.state.loadedProduct.barcode !== +this.props.match.params.productId)) {
                 axios.get('/products/' + this.props.match.params.productId)
                     .then(res => {
                         console.log("get /products/:product returns", res.data[0]);
-                        this.setState({ loadedProduct: res.data[0], newData: res.data[0] });
+                        let cat = 0;
+                        switch (res.data[0].category_name) {
+                            case "Fresh":
+                                cat = 1;
+                                break;
+                            case "Dairy and Frozen":
+                                cat = 2;
+                                break;
+                            case "Drinks":
+                                cat = 3;
+                                break;
+                            case "Personal":
+                                cat = 4;
+                                break;
+                            case "Household":
+                                cat = 5;
+                                break;
+                            case "Pet":
+                                cat = 6;
+                                break;
+                            default:
+                                console.log("If you see this you should take a break and rethink about your life choices");
+                        }
+                        this.setState({ loadedProduct: res.data[0], newData: res.data[0], catNum: cat, oldCatNum: cat });
                     })
                     .catch(err => {
                         console.log("get /products/:product error: ", err.message);
@@ -43,6 +66,7 @@ class SingleProduct extends Component {
         }
     }
 
+
     deleteHandler = () => {
         axios.delete('/products/' + this.props.match.params.productId)
             .then(res => {
@@ -58,6 +82,8 @@ class SingleProduct extends Component {
 
     updateHandler = () => {
         const data = this.state.newData;
+        var regex = /\d/g;
+        data["category_id"] = this.state.catNum;
 
         let isReady = true;
         //Check newData for empty strings
@@ -67,23 +93,26 @@ class SingleProduct extends Component {
         }
 
         if (isReady) {
-            if (data === this.state.loadedProduct)
-                alert("Oops! Information not changed.");
-            else if (data.price && data.price <= 0)
+            if (data.price && data.price <= 0)
                 alert("Oops! Invalid product price");
+            else if (data.category_id && data.category_id === 0)
+                alert("Oops! Invalid product category");
+            else if (regex.test(data.name))
+                alert("Oops! Please do not use numbers as product name.");
+            else if (regex.test(data.brand_name))
+                alert("Oops! Please do not use numbers as brand name.");
             else {
-                console.log(data);
-                
-                // axios.put('/products/' + this.props.match.params.productId, data)
-                //     .then(res => {
-                //         console.log("put /products/:product returns: ", res.data);
-                //         alert("Product information successfully updated.")
-                //         this.props.history.push("/Products/" + this.props.match.params.productId);
-                //     })
-                //     .catch(err => {
-                //         console.log("put /products/:product error: ", err.message);
-                //         this.props.history.push("/aWildErrorHasAppeared/" + err.message);
-                //     })
+                console.log("updating with data: ", data);
+                axios.put('/products/' + this.props.match.params.productId, data)
+                    .then(res => {
+                        console.log("put /products/:product returns: ", res.data);
+                        alert("Product information successfully updated.")
+                        this.props.history.push("/Products");
+                    })
+                    .catch(err => {
+                        console.log("put /products/:product error: ", err.message);
+                        this.props.history.push("/aWildErrorHasAppeared/" + err.message);
+                    })
             }
         }
         else
@@ -97,22 +126,47 @@ class SingleProduct extends Component {
     changeHandler = (event) => {
         const data = { ...this.state.newData };
         data[event.target.name] = event.target.value;
-        this.setState({ newData: data });
+        if (event.target.name === "category_name")
+            this.setState({ catNum: event.target.value });
+        else
+            this.setState({ newData: data });
     }
 
     render() {
         let output = <div> Sending Request </div>
-
         let historyPrice = <div> Loading ... </div>
-        /* fix with ArrElement and map in historyPrice */
-        if (this.state.historyPrice)
-            historyPrice = <div> HistoryPrice will be displayed here </div>
+
+        let historyExists = false;
+
+        if (this.state.historyPrice) {
+            if (this.state.historyPrice.length > 0) {
+                historyExists = true;
+                historyPrice = this.state.historyPrice.map((history, index) => {
+                    return (
+                        <ArrElement
+                            key={index}
+                            firstTag={"Price"}
+                            id={history.price}
+                            secondTag={"Start Date"}
+                            body={history.start_date.substring(0, 10)}
+                            thirdTag={"End Date"}
+                            secondaryBody={history.end_date.substring(0, 10)}
+                        />
+                    );
+                })
+            }
+        }
 
         if (this.props.match.params.productId) {
             output = <div> Loading... </div>;
             if (this.state.loadedProduct) {
+
                 let date = new Date(this.state.loadedProduct.first_transaction);
-                let trans = date.toString()
+                let trans = date.toString().substring(0, 24);
+                const offset = date.getTimezoneOffset();
+                date = new Date(date.getTime() - (offset * 60 * 1000));
+                const defInputDate = date.toISOString().split('T')[0];
+
                 output = (
                     <div>
                         <div className={classes.Title}>
@@ -122,13 +176,31 @@ class SingleProduct extends Component {
                         <div className={classes.Info}>
                             <div> Name: {this.state.loadedProduct.name} </div>
                             <div> Brand name: {this.state.loadedProduct.brand_name} </div>
+                            <div> Category name: {this.state.loadedProduct.category_name} </div>
                             <div> Price: {this.state.loadedProduct.price} </div>
                             <div> First transaction: {trans} </div>
                         </div>
 
-                        <div className={classes.Info}>
-                            {historyPrice}
-                        </div>
+                        {historyExists ?
+                            <div className={classes.Info}>
+                                <div className={classes.Title}> Older prices </div>
+                                <br />
+                                {historyPrice}
+                            </div>
+                            :
+                            <div className={classes.Info}>
+                                <div className={classes.Title}> This product has no older prices </div>
+                                <br />
+                                <ArrElement
+                                    key={1}
+                                    firstTag={"Price"}
+                                    id={this.state.loadedProduct.price}
+                                    secondTag={"Date"}
+                                    body={this.state.loadedProduct.first_transaction.substring(0, 10) + " to today"}
+                                />
+                            </div>
+                        }
+
 
                         <form className={classes.Form}>
                             <div className={classes.Title}> Change information </div>
@@ -142,7 +214,7 @@ class SingleProduct extends Component {
                             <div>
                                 <label>Price: </label>
                                 <br />
-                                <input type="number" maxLength={5} defaultValue={this.state.loadedProduct.price} name="price" onChange={this.changeHandler} />
+                                <input type="number" min={1} defaultValue={this.state.loadedProduct.price} name="price" onChange={this.changeHandler} />
                             </div>
 
                             <div>
@@ -152,9 +224,23 @@ class SingleProduct extends Component {
                             </div>
 
                             <div>
+                                <label>Product Category: </label>
+                                <br />
+                                <select name="category_name" onChange={this.changeHandler} value={this.state.catNum}>
+                                    <option value={0} hidden> Please select a category for the new product </option>
+                                    <option value={2}> Dairy and Frozen </option>
+                                    <option value={3}> Drinks </option>
+                                    <option value={1}> Fresh </option>
+                                    <option value={5}> Household </option>
+                                    <option value={4}> Personal </option>
+                                    <option value={6}> Pet </option>
+                                </select>
+                            </div>
+
+                            <div>
                                 <label>First Transaction: </label>
                                 <br />
-                                <input type="date" defaultValue={this.state.loadedProduct.first_transaction} name="first_transaction" onChange={this.changeHandler} />
+                                <input type="date" defaultValue={defInputDate} name="first_transaction" onChange={this.changeHandler} />
                             </div>
                         </form>
 

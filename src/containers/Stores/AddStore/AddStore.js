@@ -66,15 +66,15 @@ class AddStore extends Component {
             alert("Oops!  Please do not use numbers as city name.");
         else
             console.log("submitting the following data:", data);
-        // axios.post('/stores', data)
-        //     .then(res => {
-        //         console.log("/stores returns: ", res.data);
-        //         this.props.history.push("/Stores/" + res.data.store_id);
-        //     })
-        //     .catch(err => {
-        //         console.log("/stores error:", err.message);
-        //         this.props.history.push("/aWildErrorHasAppeared/" + err.message);
-        //     });
+            axios.post('/stores', data)
+                .then(res => {
+                    console.log("/stores returns: ", res.data);
+                    this.props.history.push("/Stores/" + res.data.store_id);
+                })
+                .catch(err => {
+                    console.log("/stores error:", err.message);
+                    this.props.history.push("/aWildErrorHasAppeared/" + err.message);
+                });
     }
 
     addTelephoneHandler = () => {

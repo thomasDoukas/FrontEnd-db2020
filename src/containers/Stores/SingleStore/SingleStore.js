@@ -54,11 +54,11 @@ class SingleStore extends Component {
                 count += 1;
             if (tel <= 0)
                 wrongTelValue = true;
-            if (count === this.state.contactInfo.length){
+            if (count === this.state.contactInfo.length) {
                 data["phone"] = this.state.contactInfo;
                 delete data.phones;
             }
-                
+
         });
 
         //Check newData for empty strings
@@ -86,16 +86,16 @@ class SingleStore extends Component {
                 alert("Oops!  Please do not use numbers as city name.");
             else {
                 console.log("submitting the following data:", data);
-                // axios.put("/stores/" + this.props.match.params.StoreId, data)
-                //     .then(res => {
-                //         console.log("put /stores/:store returns: ", res.data);
-                //         alert("Store information successfully updated.");
-                //         this.props.history.push("/Stores/" + res.data.store_id);
-                //     })
-                //     .catch(err => {
-                //         console.log("put /stores/:store error:", err.message);
-                //         this.props.history.push("/aWildErrorHasAppeared" + err.message);
-                //     })
+                axios.put("/stores/" + this.props.match.params.storeId, data)
+                    .then(res => {
+                        console.log("put /stores/:store returns: ", res.data.store_id);
+                        alert("Store has been successfully updated.");
+                        this.props.history.push("/Stores");
+                    })
+                    .catch(err => {
+                        console.log("put /stores/:store error:", err.message);
+                        this.props.history.push("/aWildErrorHasAppeared" + err.message);
+                    })
             }
         }
         else
