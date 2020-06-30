@@ -43,7 +43,7 @@ class SingleStore extends Component {
     }
 
     updateHandler = () => {
-        const data = this.state.newData;
+        const data = { ...this.state.newData };
         var regex = /\d/g;
         let isReady = true;
 
@@ -78,7 +78,7 @@ class SingleStore extends Component {
                 alert("Oops! Invalid store size.");
             else if (data.number && data.number <= 0)
                 alert("Oops! Invalid street number.");
-            else if (data.postal_code && data.postal_code <= 0 && data.postal_code.length !== 5)
+            else if (data.postal_code && (data.postal_code < 11111 || data.postal_code > 99999))
                 alert("Oops! Invalid postal code.");
             else if (regex.test(data.street))
                 alert("Oops! Please do not use numbers as street name.");

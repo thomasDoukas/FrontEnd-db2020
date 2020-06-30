@@ -13,19 +13,15 @@ class SingleClient extends Component {
         tabData: null
     }
 
-    componentDidMount() {
-        this.loadData();
-    }
-
     //Fetch data from db for selected store only
-    loadData() {
+    componentDidMount() {
         if (this.props.match.params.clientId) {
             if (!this.state.loadedClient || (this.state.loadedClient && this.state.loadedClient.card !== +this.props.match.params.ClientId)) {
                 //Data for client
                 axios.get('/clients/' + this.props.match.params.clientId)
                     .then(res => {
                         console.log("get /clients/:client returns: ", res.data);
-                        this.setState({ loadedClient: res.data, newData: res.data });
+                        this.setState({ loadedClient: res.data[0], newData: res.data[0] });
                     })
                     .catch(err => {
                         console.log("get /clients/:client error: ", err.message);
@@ -73,6 +69,7 @@ class SingleClient extends Component {
 
     updateHandler = () => {
         const data = this.state.newData;
+        var regex = /\d/g;
 
         let isReady = true;
         //Check newData for empty strings
@@ -82,29 +79,36 @@ class SingleClient extends Component {
         }
 
         if (isReady) {
-            if (data === this.state.loadedProduct)
-                alert("Information not changed! Mission abort.");
-            else if (data.phone && data.phone <= 0)
-                alert("Oops! Invalid client phone")
+            if (data === this.state.loadedClient)
+                alert("Oops! Information not changed!");
+            else if (data.phone && data.phone <= 0 && data.phone.label < 10)
+                alert("Oops! Invalid client phone");
             else if (data.number && data.number <= 0)
-                alert("Oops! Invalid address number.")
-            else if (data.postal_code && data.postal_code <= 0)
-                alert("Oops! Invalid postal code.")
+                alert("Oops! Invalid address number.");
+            else if (data.postal_code && (data.postal_code < 11111 || data.postal_code > 99999) )
+                alert("Oops! Invalid postal code.");
             else if (data.points && data.points < 0)
-                alert("Oops! Invalid points number.")
+                alert("Oops! Invalid points number.");
             else if (data.family_members && data.family_members < 0)
-                alert("Oops! Invalid postal code.")
+                alert("Oops! Invalid family members.");
+            else if (regex.test(data.name))
+                alert("Oops! Please do not use numbers as clients name.");
+            else if (regex.test(data.street))
+                alert("Oops! Please do not use numbers in street name.");
+            else if (regex.test(data.city))
+                alert("Oops! Please do not use numbers in city name.");
             else {
-                axios.post('/clients/' + this.props.match.params.ClientId, data)
-                    .then(res => {
-                        console.log("post /clients/:client returns", res.data);
-                        alert("Client information successfully updated.");
-                        this.props.history.push("/Clients/" + res.data.card);
-                    })
-                    .catch(err => {
-                        console.log("post /clients/:client error", err.message);
-                        this.props.history.push("/aWildErrorHasAppeared/" + err.message);
-                    })
+                console.log("updating with data: ", data);
+                // axios.post('/clients/' + this.props.match.params.ClientId, data)
+                //     .then(res => {
+                //         console.log("post /clients/:client returns", res.data);
+                //         alert("Client information successfully updated.");
+                //         this.props.history.push("/Clients/" + res.data.card);
+                //     })
+                //     .catch(err => {
+                //         console.log("post /clients/:client error", err.message);
+                //         this.props.history.push("/aWildErrorHasAppeared/" + err.message);
+                //     })
             }
         }
         else
@@ -129,7 +133,14 @@ class SingleClient extends Component {
             output = <div> Loading...! </div>;
             if (this.state.loadedClient) {
 
-                let address = this.state.loadedClient.number + ' ' + this.state.loadedClient.street + ' St, ' + this.state.loadedClient.city + ', ' + this.state.loadedClient.postal_code;
+                let date = new Date(this.state.loadedClient.date_of_birth);
+                let birthday = date.toString().substring(0, 15);
+                const offset = date.getTimezoneOffset();
+                date = new Date(date.getTime() - (offset * 60 * 1000));
+                const defInputBirthday = date.toISOString().split('T')[0];
+
+                let address = this.state.loadedClient.number + ' ' + this.state.loadedClient.street + ', ' + this.state.loadedClient.city + ', ' + this.state.loadedClient.postal_code;
+
                 if (this.state.tabData) {
                     switch (this.state.selectedTab) {
                         case "favouriteProducts":
@@ -160,7 +171,7 @@ class SingleClient extends Component {
 
                         <div className={classes.Info}>
                             <div> Name: {this.state.loadedClient.name}</div>
-                            <div> Date of Birth: {this.state.loadedClient.date_of_birth} </div>
+                            <div> Date of Birth: {birthday} </div>
                             <div> Phone: {this.state.loadedClient.phone} </div>
                             <div> Family members: {this.state.loadedClient.family_members} </div>
                             <div> Pet: {this.state.loadedClient.pet} </div>
@@ -224,7 +235,7 @@ class SingleClient extends Component {
                             <div>
                                 <label>Date of Birth: </label>
                                 <br />
-                                <input type="date" name="date_of_birth" onChange={this.changeHandler} />
+                                <input type="date" defaultValue={defInputBirthday} name="date_of_birth" onChange={this.changeHandler} />
                             </div>
 
                             <div>
@@ -236,20 +247,26 @@ class SingleClient extends Component {
                             <div>
                                 <label>Points: </label>
                                 <br />
-                                <input type="number" defaultValue={this.state.loadedClient.points} name="points" onChange={this.changeHandler} />
+                                <input type="number" defaultValue={this.state.loadedClient.points} min={0} name="points" onChange={this.changeHandler} />
                             </div>
 
 
                             <div>
                                 <label>Family members: </label>
                                 <br />
-                                <input type="number" defaultValue={this.state.loadedClient.family_members} name="family_members" onChange={this.changeHandler} />
+                                <input type="number" defaultValue={this.state.loadedClient.family_members} min={0} name="family_members" onChange={this.changeHandler} />
                             </div>
 
                             <div>
                                 <label>Pet: </label>
                                 <br />
-                                <input type="text" defaultValue={this.state.loadedClient.pet} name="pet" onChange={this.changeHandler} />
+                                <select name="pet" onChange={this.changeHandler} defaultValue={this.state.loadedClient.pet}>
+                                    <option value={""}> No Pet </option>
+                                    <option value={"Cat"}> Cat </option>
+                                    <option value={"Bird"}> Bird </option>
+                                    <option value={"Dog"}> Dog </option>
+                                    <option value={"Fish"}> Fish </option>
+                                </select>
                             </div>
 
                             <div> Address
@@ -261,7 +278,7 @@ class SingleClient extends Component {
                                     <br />
                                     <label>Number: </label>
                                     <br />
-                                    <input type="number" defaultValue={this.state.loadedClient.number} name="number" onChange={this.changeHandler} />
+                                    <input type="number" defaultValue={this.state.loadedClient.number} min={1} name="number" onChange={this.changeHandler} />
                                     <br />
                                     <br />
                                     <label>City: </label>

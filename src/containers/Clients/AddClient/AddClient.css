@@ -47,6 +47,16 @@
     box-sizing: border-box;
 }
 
+.Information select {
+    width: 50%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #333333;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
 .Information label {
     position: absolute;
     left: 25%;

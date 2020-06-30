@@ -7,7 +7,9 @@ import classes from './AddClient.css';
 class AddClient extends Component {
 
     // state = {
-    //     clientData: null
+    //     clientData: null,
+    //     firstName: null,
+    //     lastName: null
     // }
 
     state = {
@@ -16,7 +18,7 @@ class AddClient extends Component {
             date_of_birth: null,
             points: null,
             phone: null,
-            pet: null,
+            pet: "",
             family_members: null,
             street: null,
             number: null,
@@ -30,28 +32,42 @@ class AddClient extends Component {
     }
 
     saveHandler = () => {
-        const data = { ...this.state.clientData };
-        // if (Object.keys(data).length < 10)
+        let data = { ...this.state.clientData };
+        var regex = /\d/g;
+
+        delete data.firstName;
+
+        if (this.state.firstName !== null && this.state.lastName !== null) {
+            data["name"] = this.state.firstName + ' ' + this.state.lastName;
+        }
+
         if (Object.keys(data).length < 10)
             alert("Oops! To create a client you must specify all parameters.");
+        else if (regex.test(data.name))
+            alert("Oops! Please do not use numbers as clients name.");
         else if (data.phone <= 0)
             alert("Oops! Invalid client phone")
         else if (data.number <= 0)
             alert("Oops! Invalid address number.")
-        else if (data.postal_code <= 0)
-            alert("Oops! Invalid postal code.")
+        else if (data.postal_code && (data.postal_code < 11111 || data.postal_code > 99999) )
+                alert("Oops! Invalid postal code.");
         else if (data.points < 0)
             alert("Oops! Invalid points number.")
         else if (data.family_members < 0)
-            alert("Oops! Invalid postal code.")
+            alert("Oops! Invalid family members.")
+        else if (regex.test(data.street))
+            alert("Oops! Please do not use numbers as street name.");
+        else if (regex.test(data.city))
+            alert("Oops! Please do not use numbers as city name.");
         else {
+            console.log("submitting the following data:", data);
             axios.post('/clients', data)
                 .then(res => {
                     console.log("post /clients returns: ", res.data);
                     this.props.history.push("/Clients/" + res.data.card);
                 })
                 .catch(err => {
-                    console.log("post /clients error: ", err.message);
+                    console.log("post /clients error: ", err);
                     this.props.history.push("/aWildErrorHasAppeared/" + err.message);
                 })
         }
@@ -59,7 +75,15 @@ class AddClient extends Component {
 
     changeHandler = (event) => {
         const data = { ...this.state.clientData };
-        data[event.target.name] = event.target.value;
+        if (event.target.name === "firstName")
+            this.setState({ firstName: event.target.value });
+
+        if (event.target.name === "lastName")
+            this.setState({ lastName: event.target.value });
+
+        else
+            data[event.target.name] = event.target.value;
+
         this.setState({ clientData: data });
     }
 
@@ -76,9 +100,15 @@ class AddClient extends Component {
                     <div className={classes.Information}>
 
                         <div>
-                            <label>Name: </label>
+                            <label>First Name: </label>
                             <br />
-                            <input type="text" placeholder={"milk"} name="name" onChange={this.changeHandler} />
+                            <input type="text" placeholder={"Jake"} name="firstName" onChange={this.changeHandler} />
+                        </div>
+
+                        <div>
+                            <label>Last Name: </label>
+                            <br />
+                            <input type="text" placeholder={"Jake"} name="lastName" onChange={this.changeHandler} />
                         </div>
 
                         <div>
@@ -96,31 +126,25 @@ class AddClient extends Component {
                         <div>
                             <label>Points: </label>
                             <br />
-                            <input type="number" placeholder={"10000"} name="points" onChange={this.changeHandler} />
+                            <input type="number" placeholder={"10000"} min={0} name="points" onChange={this.changeHandler} />
                         </div>
 
 
                         <div>
                             <label>Family members: </label>
                             <br />
-                            <input type="number" placeholder={"2"} name="family_members" onChange={this.changeHandler} />
-                        </div>
-
-                        <div>
-                            <label>Pet: </label>
-                            <br />
-                            <input type="text" placeholder={"Dog"} name="pet" onChange={this.changeHandler} />
+                            <input type="number" placeholder={"2"} min={1} name="family_members" onChange={this.changeHandler} />
                         </div>
 
                         <div>
                             <label>Pet: </label>
                             <br />
                             <select name="pet" onChange={this.changeHandler}>
-                                <option value={null}> No Pet </option>
-                                <option value={"cat"}> Cat </option>
-                                <option value={"bird"}> Bird </option>
-                                <option value={"dog"}> Dog </option>
-                                <option value={"fish"}> Fish </option>
+                                <option value={""}> No Pet </option>
+                                <option value={"Cat"}> Cat </option>
+                                <option value={"Bird"}> Bird </option>
+                                <option value={"Dog"}> Dog </option>
+                                <option value={"Fish"}> Fish </option>
                             </select>
                         </div>
 
@@ -144,7 +168,7 @@ class AddClient extends Component {
                             <br />
                             <label>Postal Code: </label>
                             <br />
-                            <input type="number" maxLength={4} placeholder={"12149"} name="postal_code" onChange={this.changeHandler} />
+                            <input type="number" placeholder={"12149"} min={11111} name="postal_code" onChange={this.changeHandler} />
                             <br />
                         </div>
 
