@@ -90,3 +90,25 @@
     height: 100px;
     position: relative;
 }
+
+.TelButtons {
+    text-align: center;
+}
+
+.TelButtons button {
+    margin: 10px;
+    margin-top: 20px;
+    border: 2px solid #333333;
+    color: #333333;
+    background-color: white;
+    height: 30px;
+    font-size: 15px;
+    width: 20%;
+    outline: none;
+    cursor: pointer;
+}
+
+.TelButtons button:hover {
+    color: rgb(151, 216, 207);
+    background-color: #333333;
+}

@@ -8,7 +8,8 @@ class SingleStore extends Component {
 
     state = {
         loadedStore: null,
-        newData: null
+        newData: null,
+        contactInfo: []
     }
 
     //Fetch data from db for selected store only
@@ -18,7 +19,7 @@ class SingleStore extends Component {
                 axios.get("/stores/" + this.props.match.params.storeId)
                     .then(res => {
                         console.log("get /stores/:store returns: ", res.data);
-                        this.setState({ loadedStore: res.data[0], newData: res.data[0] });
+                        this.setState({ loadedStore: res.data, newData: res.data, contactInfo: res.data.phones });
                     })
                     .catch(err => {
                         console.log("get /stores/:store error:", err.message);
@@ -42,9 +43,24 @@ class SingleStore extends Component {
     }
 
     updateHandler = () => {
-
         const data = this.state.newData;
+        var regex = /\d/g;
         let isReady = true;
+
+        let count = 0;
+        let wrongTelValue = false;
+        this.state.contactInfo.forEach(tel => {
+            if (tel.length === 10)
+                count += 1;
+            if (tel <= 0)
+                wrongTelValue = true;
+            if (count === this.state.contactInfo.length){
+                data["phone"] = this.state.contactInfo;
+                delete data.phones;
+            }
+                
+        });
+
         //Check newData for empty strings
         for (var member in data) {
             if (data[member] === "") {
@@ -56,30 +72,57 @@ class SingleStore extends Component {
         if (isReady) {
             if (data === this.state.loadedStore)
                 alert("Oops! Information not changed!");
-            else if (data.phone && (data.phone <= 0 || data.phone.length < 10))
+            else if (wrongTelValue)
                 alert("Oops! Invalid phone number.");
             else if (data.size && data.size <= 0)
                 alert("Oops! Invalid store size.");
             else if (data.number && data.number <= 0)
                 alert("Oops! Invalid street number.");
-            else if (data.postal_code && data.postal_code <= 0)
+            else if (data.postal_code && data.postal_code <= 0 && data.postal_code.length !== 5)
                 alert("Oops! Invalid postal code.");
+            else if (regex.test(data.street))
+                alert("Oops! Please do not use numbers as street name.");
+            else if (regex.test(data.city))
+                alert("Oops!  Please do not use numbers as city name.");
             else {
-                axios.put("/stores/" + this.props.match.params.StoreId, data)
-                    .then(res => {
-                        console.log("put /stores/:store returns: ", res.data);
-                        alert("Store information successfully updated.");
-                        this.props.history.push("/Stores/" + res.data.store_id);
-                    })
-                    .catch(err => {
-                        console.log("put /stores/:store error:", err.message);
-                        this.props.history.push("/aWildErrorHasAppeared" + err.message);
-                    })
+                console.log("submitting the following data:", data);
+                // axios.put("/stores/" + this.props.match.params.StoreId, data)
+                //     .then(res => {
+                //         console.log("put /stores/:store returns: ", res.data);
+                //         alert("Store information successfully updated.");
+                //         this.props.history.push("/Stores/" + res.data.store_id);
+                //     })
+                //     .catch(err => {
+                //         console.log("put /stores/:store error:", err.message);
+                //         this.props.history.push("/aWildErrorHasAppeared" + err.message);
+                //     })
             }
         }
         else
             alert("Oops! Looks like something is empty");
 
+    }
+
+    addTelephoneHandler = () => {
+        const data = [...this.state.newData.phones];
+        data.push("0");
+
+        const newState = { ...this.state.newData };
+        newState["phones"] = data;
+
+        this.setState({ newData: newState, contactInfo: data });
+    }
+
+    deleteTelephoneHandler = () => {
+        if (this.state.newData.phones.length > 1) {
+            const data = [...this.state.newData.phones];
+            data.splice(-1, 1);
+
+            const newState = { ...this.state.newData };
+            newState["phones"] = data;
+
+            this.setState({ newData: newState, contactInfo: data });
+        }
     }
 
     backHandler = () => {
@@ -104,22 +147,29 @@ class SingleStore extends Component {
         }
     }
 
-    render() {
+    changeTelephoneHandler = (index, event) => {
+        const data = [...this.state.contactInfo];
+        data[index] = event.target.value;
+        this.setState({ contactInfo: data });
+    }
 
+    render() {
         let output = <div> Sending Request </div>
         if (this.props.match.params.storeId) {
             output = <div> Loading... </div>;
             if (this.state.loadedStore) {
 
+                const telephones = this.state.newData.phones.map((telephone, index) => {
+                    return (
+                        <div key={index}>
+                            <label>Phone #{index + 1}:</label>
+                            <br />
+                            <input type="tel" maxLength={10} defaultValue={telephone} onChange={this.changeTelephoneHandler.bind(this, index)} />
+                        </div>
+                    );
+                })
+
                 let address = this.state.loadedStore.number + ' ' + this.state.loadedStore.street + ', ' + this.state.loadedStore.city + ', ' + this.state.loadedStore.postal_code;
-                
-                // CHANGE - Operating_hours will be a Date variable.
-                //
-                //
-                //
-                //
-
-
                 let operatingHours = this.state.loadedStore.operating_hours.split(' ');
                 let from = operatingHours[0];
                 let to = operatingHours[1];
@@ -132,8 +182,7 @@ class SingleStore extends Component {
 
                         <div className={classes.Info}>
                             <div> Operating Hours: {from} - {to} </div>
-                            {/* <div> Operating Hours: {this.state.loadedStore.operating_hours} </div> */}
-                            <div> Contact Information: {this.state.loadedStore.phone} </div>
+                            <div> Contact Information: {this.state.loadedStore.phones.join(", ")} </div>
                             <div> Store size: {this.state.loadedStore.size} </div>
                             <div> Address: {address} </div>
                         </div>
@@ -148,11 +197,7 @@ class SingleStore extends Component {
                                 <input type="time" defaultValue={to} name="to" onChange={this.changeHandler} />
                             </div>
 
-                            <div>
-                                <label>Phone: </label>
-                                <br />
-                                <input type="tel" maxLength={10} defaultValue={this.state.loadedStore.phone} name="phone" onChange={this.changeHandler} />
-                            </div>
+                            {telephones}
 
                             <div>
                                 <label>Size: </label>
@@ -185,11 +230,20 @@ class SingleStore extends Component {
                             </div>
                         </form>
 
+                        <div>
+                            <div className={classes.TelButtons}>
+                                <button onClick={this.addTelephoneHandler}> Add Extra Phone </button>
+                                <button onClick={this.deleteTelephoneHandler}> Delete Extra Phone </button>
+                            </div>
+                        </div>
+
+
                         <div className={classes.Buttons}>
                             <button className={classes.Delete} onClick={this.deleteHandler}> Delete Store </button>
                             <button className={classes.Update} onClick={this.updateHandler}> Submit Changes </button>
                             <button className={classes.Back} onClick={this.backHandler}> Back </button>
                         </div>
+
 
                     </div>
                 )

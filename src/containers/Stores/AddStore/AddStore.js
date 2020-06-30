@@ -46,12 +46,9 @@ class AddStore extends Component {
                 count += 1;
             if (tel <= 0)
                 wrongTelValue = true;
-
         });
         if (count === this.state.contactInfo.length)
             data["phone"] = this.state.contactInfo;
-
-        console.log(Object.keys(data).length);
 
         if (Object.keys(data).length < 7)
             alert("Oops! To create a store you must specify all parameters.");
@@ -61,12 +58,12 @@ class AddStore extends Component {
             alert("Oops! Invalid store size.");
         else if (data.number <= 0)
             alert("Oops! Invalid street number.");
-        else if (data.postal_code <= 0 || data.postal_code.length != 5)
+        else if (data.postal_code <= 0 || data.postal_code.length !== 5)
             alert("Oops! Invalid postal code.");
         else if (regex.test(data.street))
-            alert("Oops! Invalid street.");
+            alert("Oops! Please do not use numbers as street name.");
         else if (regex.test(data.city))
-            alert("Oops! Invalid city.");
+            alert("Oops!  Please do not use numbers as city name.");
         else
             console.log("submitting the following data:", data);
         // axios.post('/stores', data)
@@ -113,7 +110,7 @@ class AddStore extends Component {
 
     render() {
 
-        let telephones = this.state.contactInfo.map((telephone, index) => {
+        const telephones = this.state.contactInfo.map((telephone, index) => {
             return (
                 <div key={index}>
                     <label>Phone #{index + 1}:</label>

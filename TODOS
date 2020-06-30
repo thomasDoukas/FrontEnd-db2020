@@ -9,3 +9,8 @@
     add toggle in transactions 
         new mode will also include category_id in form
         in old mode fix quantity (add second ball in slider - copy from total_amount) 
+
+
+set db_mysqlPassword=el16081
+node server
+
