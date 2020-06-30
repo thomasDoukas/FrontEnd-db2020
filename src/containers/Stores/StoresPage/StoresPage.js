@@ -15,11 +15,13 @@ class StoresPage extends Component {
         selectedStoreId: null,
     }
 
+    //Fetch array of store objects from database
     componentDidMount() {
         axios.get('/stores')
             .then(res => {
                 console.log("/stores returns:", res.data);
-                this.setState({ stores: res.data })
+                this.setState({ stores: res.data });
+
             })
             .catch(err => {
                 console.log("/stores error:", err.message);
@@ -34,9 +36,7 @@ class StoresPage extends Component {
     render() {
 
         const stores = this.state.stores.map(store => {
-        let address = store.number + ' ' + store.street + 'St, ' + store.city + ', ' + store.postal_code;
-
-
+            let address = store.number + ' ' + store.street + ', ' + store.city + ', ' + store.postal_code;
             return (<Link to={"/Stores/" + store.store_id} key={store.store_id} style={{ textDecoration: 'none' }}>
                 <ArrElement
                     firstTag={"Store id"}
@@ -49,7 +49,7 @@ class StoresPage extends Component {
         })
 
         let output = <div> Loading... </div>;
-        if (!this.state.stores) {
+        // if (!this.state.stores) {
             output = (
                 <div className={classes.Content}>
 
@@ -64,7 +64,7 @@ class StoresPage extends Component {
                     <Arr> {stores} </Arr>
                 </div>
             )
-        }
+        // }
 
         return output;
 

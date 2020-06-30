@@ -11,18 +11,14 @@ class SingleStore extends Component {
         newData: null
     }
 
-    componentDidMount() {
-        this.loadData();
-    }
-
     //Fetch data from db for selected store only
-    loadData() {
+    componentDidMount() {
         if (this.props.match.params.storeId) {
             if (!this.state.loadedStore || (this.state.loadedStore && this.state.loadedStore.id !== +this.props.match.params.storeId)) {
                 axios.get("/stores/" + this.props.match.params.storeId)
                     .then(res => {
                         console.log("get /stores/:store returns: ", res.data);
-                        this.setState({ loadedStore: res.data, newData: res.data });
+                        this.setState({ loadedStore: res.data[0], newData: res.data[0] });
                     })
                     .catch(err => {
                         console.log("get /stores/:store error:", err.message);
@@ -46,13 +42,15 @@ class SingleStore extends Component {
     }
 
     updateHandler = () => {
-        const data = this.state.newData;
 
+        const data = this.state.newData;
         let isReady = true;
         //Check newData for empty strings
         for (var member in data) {
-            if (data[member] === "")
+            if (data[member] === "") {
                 isReady = false;
+                console.log(member, " is empty ");
+            }
         }
 
         if (isReady) {
@@ -108,15 +106,24 @@ class SingleStore extends Component {
 
     render() {
 
-        let address = this.state.loadedStore.number + ' ' + this.state.loadedStore.street + 'St, ' + this.state.loadedStore.city + ', ' + this.state.loadedStore.postal_code;
-        let operatingHours = this.state.operating_hours.split('-');
-        let from = operatingHours[0];
-        let to = operatingHours[1];
-
         let output = <div> Sending Request </div>
         if (this.props.match.params.storeId) {
             output = <div> Loading... </div>;
             if (this.state.loadedStore) {
+
+                let address = this.state.loadedStore.number + ' ' + this.state.loadedStore.street + ', ' + this.state.loadedStore.city + ', ' + this.state.loadedStore.postal_code;
+                
+                // CHANGE - Operating_hours will be a Date variable.
+                //
+                //
+                //
+                //
+
+
+                let operatingHours = this.state.loadedStore.operating_hours.split(' ');
+                let from = operatingHours[0];
+                let to = operatingHours[1];
+
                 output = (
                     <div>
                         <div className={classes.Title}>
@@ -124,7 +131,8 @@ class SingleStore extends Component {
                         </div>
 
                         <div className={classes.Info}>
-                            <div> Operating Hours: {this.state.loadedStore.operating_hours} </div>
+                            <div> Operating Hours: {from} - {to} </div>
+                            {/* <div> Operating Hours: {this.state.loadedStore.operating_hours} </div> */}
                             <div> Contact Information: {this.state.loadedStore.phone} </div>
                             <div> Store size: {this.state.loadedStore.size} </div>
                             <div> Address: {address} </div>

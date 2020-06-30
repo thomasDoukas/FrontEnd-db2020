@@ -22,15 +22,15 @@ class SingleProduct extends Component {
             if (!this.state.loadedProduct || (this.state.loadedProduct && this.state.loadedProduct.barcode !== +this.props.match.params.productId)) {
                 axios.get('/products/' + this.props.match.params.productId)
                     .then(res => {
-                        console.log("get /products/:product returns", res.data);
-                        this.setState({ loadedProduct: res.data, newData: res.data });
+                        console.log("get /products/:product returns", res.data[0]);
+                        this.setState({ loadedProduct: res.data[0], newData: res.data[0] });
                     })
                     .catch(err => {
                         console.log("get /products/:product error: ", err.message);
                         this.props.history.push("/aWildErrorHasAppeared/" + err.message);
                     })
 
-                axios.get('/product/' + this.props.match.params.productId + '/history')
+                axios.get('/products/' + this.props.match.params.productId + '/history')
                     .then(res => {
                         console.log("get /products/:product/history returns: ", res.data);
                         this.setState({ historyPrice: res.data });
@@ -109,6 +109,8 @@ class SingleProduct extends Component {
         if (this.props.match.params.productId) {
             output = <div> Loading... </div>;
             if (this.state.loadedProduct) {
+                let date = new Date(this.state.loadedProduct.first_transaction);
+                let trans = date.toString()
                 output = (
                     <div>
                         <div className={classes.Title}>
@@ -119,7 +121,7 @@ class SingleProduct extends Component {
                             <div> Name: {this.state.loadedProduct.name} </div>
                             <div> Brand name: {this.state.loadedProduct.brand_name} </div>
                             <div> Price: {this.state.loadedProduct.price} </div>
-                            <div> First transaction: {this.state.loadedProduct.first_transaction} </div>
+                            <div> First transaction: {trans} </div>
                         </div>
 
                         <div className={classes.Info}>

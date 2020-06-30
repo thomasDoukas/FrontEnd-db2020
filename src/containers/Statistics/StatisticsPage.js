@@ -12,13 +12,13 @@ class StatisticsPage extends Component {
     }
 
     componentDidMount() {
-        axios.get('/db/api/stats/hot-couples')
+        axios.get('/stats/hot-couples')
             .then(res => {
-                console.log("get /db/api/stats/hot-couples returns: ", res.data);
+                console.log("get /stats/hot-couples returns: ", res.data);
                 this.setState({ tabData: res.data })
             })
             .catch(err => {
-                console.log("get /db/api/stats/hot-couples error:", err.message);
+                console.log("get /stats/hot-couples error:", err.message);
 
                 this.props.history.push("/aWildErrorHasAppeared/" + err.message);
             })
@@ -26,13 +26,13 @@ class StatisticsPage extends Component {
 
     changeTabHandler = (link, event) => {
         let tab = event.target.value;
-        axios.get('/db/api/stats' + link)
+        axios.get('/stats' + link)
             .then(res => {
-                console.log("get /db/api/stats", link, " returns: ", res.data);
+                console.log("get /stats", link, " returns: ", res.data);
                 this.setState({ tabData: res.data, selectedTab: tab })
             })
             .catch(err => {
-                console.log("get /db/api/stats", link, " error: ", err.message);
+                console.log("get /stats", link, " error: ", err.message);
                 this.props.history.push("/aWildErrorHasAppeared/" + err.message);
             })
     }

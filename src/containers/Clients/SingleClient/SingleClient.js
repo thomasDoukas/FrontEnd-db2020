@@ -123,14 +123,13 @@ class SingleClient extends Component {
 
     render() {
         let output = <div> Sending Request </div>
-        let address = this.state.loadedClient.number + ' ' + this.state.loadedClient.street + ' St, ' + this.state.loadedClient.city + ', ' + this.state.loadedClient.postal_code;
-
         let stats = <div> Loading </div>
 
         if (this.props.match.params.clientId) {
             output = <div> Loading...! </div>;
             if (this.state.loadedClient) {
 
+                let address = this.state.loadedClient.number + ' ' + this.state.loadedClient.street + ' St, ' + this.state.loadedClient.city + ', ' + this.state.loadedClient.postal_code;
                 if (this.state.tabData) {
                     switch (this.state.selectedTab) {
                         case "favouriteProducts":

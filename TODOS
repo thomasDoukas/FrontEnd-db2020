@@ -8,4 +8,4 @@
     add reset form button in all forms
     add toggle in transactions 
         new mode will also include category_id in form
-        in old mode fix quantity (add second ball in slider - copy from total_amount)
+        in old mode fix quantity (add second ball in slider - copy from total_amount) 

@@ -31,6 +31,7 @@ class AddClient extends Component {
 
     saveHandler = () => {
         const data = { ...this.state.clientData };
+        // if (Object.keys(data).length < 10)
         if (Object.keys(data).length < 10)
             alert("Oops! To create a client you must specify all parameters.");
         else if (data.phone <= 0)

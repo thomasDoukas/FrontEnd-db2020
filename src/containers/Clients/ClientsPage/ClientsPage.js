@@ -34,23 +34,21 @@ class ClientsPage extends Component {
     render() {
 
         const clients = this.state.clients.map(client => {
-            let address = client.number + ' ' + client.street + ' St, ' + client.city + ', ' + client.postal_code;
-
-            return (<Link to={"/Clients/" + client.card} key={client.card} style={{ textDecoration: 'none' }}>
+            return (<Link to={"/Clients/" + client.card_id} key={client.card_id} style={{ textDecoration: 'none' }}>
                 <ArrElement
                     firstTag={"Card Number"}
-                    id={client.card}
+                    id={client.card_id}
                     secondTag={"Client Name"}
                     body={client.name}
                     thirdTag={"Address"}
-                    secondaryBody={address}
+                    secondaryBody={client.city}
                     clicked={() => this.ClientSelectedHandler(client.id)}
                 />
             </Link>);
         })
 
         let output = <div> Loading... </div>
-        if (!this.state.clients) {
+        // if (!this.state.clients) {
             output = (
                 <div className={classes.Content}>
 
@@ -65,7 +63,7 @@ class ClientsPage extends Component {
                     <Arr> {clients} </Arr>
                 </div>
             );
-        }
+        // }
 
         return output; 
     }

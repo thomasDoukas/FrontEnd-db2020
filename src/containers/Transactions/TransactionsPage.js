@@ -154,7 +154,7 @@ class TransactionsPage extends Component {
     render() {
 
         const stores = this.state.stores.map(store => {
-            let address = store.number + ' ' + store.street + 'St, ' + store.city + ', ' + store.postal_code;
+            let address = store.number + ' ' + store.street + ', ' + store.city + ', ' + store.postal_code;
             return (
                 <ArrElement
                     key={store.store_id}

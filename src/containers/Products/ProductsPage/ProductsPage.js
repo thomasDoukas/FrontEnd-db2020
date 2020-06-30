@@ -48,7 +48,7 @@ class ProductsPage extends Component {
         })
 
         let output = <div> Loading... </div>
-        if (!this.state.products) {
+        // if (!this.state.products) {
             output = (
                 <div className={classes.Content}>
 
@@ -63,7 +63,7 @@ class ProductsPage extends Component {
                     <Arr> {products} </Arr>
                 </div>
             )
-        }
+        // }
         return output;
 
     }

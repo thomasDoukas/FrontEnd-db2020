@@ -16,7 +16,12 @@ class HomePage extends Component {
                     <br/>
                     Created by:
                     <br/>
-                    names
+                    Δούκας Θωμάς
+                    <br/>
+                    Καλεμκερής Φοίβος
+                    <br/>
+                    Χωριανόπουλος Μανώλης
+                    <br/>
                 </div>
 
                 <div className={classes.Text3} >
