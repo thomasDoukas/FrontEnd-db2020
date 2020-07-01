@@ -64,7 +64,7 @@ class AddClient extends Component {
             axios.post('/clients', data)
                 .then(res => {
                     console.log("post /clients returns: ", res.data);
-                    this.props.history.push("/Clients/" + res.data.card);
+                    this.props.history.push("/Clients/" + res.data.customer_id);
                 })
                 .catch(err => {
                     console.log("post /clients error: ", err);

@@ -77,7 +77,7 @@ class StatisticsPage extends Component {
                     onClick={this.changeTabHandler.bind(this, "/hot-couples")}
                     className={(this.state.selectedTab === "productCouples") ? classes.active : null}
                 >
-                    Famous Product Couples
+                    Famous Prod Couples
                 </button>
 
                 <button

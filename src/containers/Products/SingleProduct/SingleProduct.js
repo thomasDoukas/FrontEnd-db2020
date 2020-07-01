@@ -245,7 +245,7 @@ class SingleProduct extends Component {
                         </form>
 
                         <div className={classes.Buttons}>
-                            <button className={classes.Delete} onClick={this.deleteHandler}> Delete Store </button>
+                            <button className={classes.Delete} onClick={this.deleteHandler}> Delete Product </button>
                             <button className={classes.Update} onClick={this.updateHandler}> Submit Changes </button>
                             <button className={classes.Back} onClick={this.backHandler}> Back </button>
                         </div>

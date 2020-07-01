@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
+import { Bar } from 'react-chartjs-2'
 import axios from '../../../axios.js';
+
+import ArrElement from '../../../components/Arr/ArrElement/ArrElement.js';
 
 import classes from './SingleClient.css';
 
@@ -55,7 +58,8 @@ class SingleClient extends Component {
     }
 
     deleteHandler = () => {
-        axios.delete('/clients/' + this.props.match.params.ClientId)
+        console.log('/clients/' + this.props.match.params.clientId);
+        axios.delete('/clients/' + this.props.match.params.clientId)
             .then(res => {
                 console.log("delete /clients/:client returns", res.data);
                 alert("Client has been successfully deleted.")
@@ -85,7 +89,7 @@ class SingleClient extends Component {
                 alert("Oops! Invalid client phone");
             else if (data.number && data.number <= 0)
                 alert("Oops! Invalid address number.");
-            else if (data.postal_code && (data.postal_code < 11111 || data.postal_code > 99999) )
+            else if (data.postal_code && (data.postal_code < 11111 || data.postal_code > 99999))
                 alert("Oops! Invalid postal code.");
             else if (data.points && data.points < 0)
                 alert("Oops! Invalid points number.");
@@ -99,16 +103,16 @@ class SingleClient extends Component {
                 alert("Oops! Please do not use numbers in city name.");
             else {
                 console.log("updating with data: ", data);
-                // axios.post('/clients/' + this.props.match.params.ClientId, data)
-                //     .then(res => {
-                //         console.log("post /clients/:client returns", res.data);
-                //         alert("Client information successfully updated.");
-                //         this.props.history.push("/Clients/" + res.data.card);
-                //     })
-                //     .catch(err => {
-                //         console.log("post /clients/:client error", err.message);
-                //         this.props.history.push("/aWildErrorHasAppeared/" + err.message);
-                //     })
+                axios.put('/clients/' + this.props.match.params.clientId, data)
+                    .then(res => {
+                        console.log("post /clients/:client returns", res.data);
+                        alert("Client information successfully updated.");
+                        this.props.history.push("/Clients");
+                    })
+                    .catch(err => {
+                        console.log("post /clients/:client error", err.message);
+                        this.props.history.push("/aWildErrorHasAppeared/" + err.message);
+                    })
             }
         }
         else
@@ -129,6 +133,13 @@ class SingleClient extends Component {
         let output = <div> Sending Request </div>
         let stats = <div> Loading </div>
 
+        let configGraphs = "Initalizing";
+        let xAxis = [];
+        let yAxis = [];
+
+        let avgNum = 1;
+        let decDigits = 0;
+
         if (this.props.match.params.clientId) {
             output = <div> Loading...! </div>;
             if (this.state.loadedClient) {
@@ -144,19 +155,153 @@ class SingleClient extends Component {
                 if (this.state.tabData) {
                     switch (this.state.selectedTab) {
                         case "favouriteProducts":
-                            stats = <div> favouriteProducts </div>
+                            if (this.state.tabData.length === 0) {
+                                stats =
+                                    <div className={classes.Title}>
+                                        This client hasn't made any transactions yet.
+                                    </div>
+                            }
+                            else {
+                                stats = this.state.tabData.map(favProduct => {
+                                    return (
+                                        <ArrElement
+                                            key={favProduct.barcode}
+                                            firstTag={"Barcode"}
+                                            id={favProduct.barcode}
+                                            secondTag={"Name"}
+                                            body={favProduct.name}
+                                            thirdTag={"Brand Name"}
+                                            secondaryBody={favProduct.brand_name}
+                                        />
+                                    );
+                                })
+                            }
                             break;
                         case "visitedStores":
-                            stats = <div> visitedStores </div>
+                            if (this.state.tabData.length === 0) {
+                                stats =
+                                    <div className={classes.Title}>
+                                        This client hasn't visited any stores yet.
+                                    </div>
+                            }
+                            else {
+                                stats = this.state.tabData.map(store => {
+                                    return (
+                                        <ArrElement
+                                            key={store.store_id}
+                                            firstTag={"Store ID"}
+                                            id={store.store_id}
+                                            secondTag={"Address"}
+                                            body={store.number + ' ' + store.street + ', ' + store.city + ', ' + store.postal_code}
+                                        />
+                                    );
+                                })
+                            }
                             break;
                         case "visitingHours":
-                            stats = <div> visitingHours </div>
+                            if (this.state.tabData.length === 0) {
+                                stats =
+                                    <div className={classes.Title}>
+                                        This client hasn't visited any stores yet.
+                                    </div>
+                            }
+                            else {
+                                xAxis.length = 12;
+                                xAxis = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"];
+
+                                this.state.tabData.forEach(element => {
+                                    //Create labels
+                                    if (element.hour < 10)
+                                        xAxis[element.hour - 9] = "0" + element.hour.toString() + ":00";
+                                    else
+                                        xAxis[element.hour - 9] = element.hour.toString() + ":00";
+                                    //Create dataset.data
+                                    yAxis[element.hour - 9] = element.total;
+
+                                });
+                                configGraphs = {
+                                    labels: xAxis,
+                                    datasets: [
+                                        {
+                                            label: 'Visiting Hours',
+                                            backgroundColor: 'rgba(51, 51, 51, 1)',
+                                            borderColor: 'rgba(51, 51, 51, 1)',
+                                            borderWidth: 1,
+                                            hoverBackgroundColor: 'rgb(151, 216, 207, 1)',
+                                            hoverBorderColor: 'rgb(151, 216, 207, 1)',
+                                            data: yAxis
+                                        }
+                                    ]
+                                };
+                                stats =
+                                    <Bar
+                                        data={configGraphs}
+                                        width={100}
+                                        height={500}
+                                        options={{
+                                            maintainAspectRatio: false
+                                        }}
+                                    />
+                            }
                             break;
                         case "avgWeekTransactions":
-                            stats = <div> avgWeekTransactions </div>
+                            avgNum = this.state.tabData[0].average_per_week;
+                            if (avgNum === null) {
+                                stats =
+                                    <div className={classes.Title}>
+                                        This client hasn't made any transactions yet.
+                                    </div>
+                            }
+                            else {
+                                if (Math.floor(avgNum) !== avgNum)
+                                    decDigits = avgNum.toString().split(".")[1].length || 0;
+                                if (decDigits >= 2)
+                                    avgNum = avgNum.toFixed(2);
+                                else if (decDigits === 1)
+                                    avgNum = avgNum.toString() + '0';
+
+                                stats =
+                                    <div>
+                                        <div className={classes.Title}> Average Transactions per Week </div>
+                                        <br />
+                                        <br />
+                                        <br />
+                                        <br />
+                                        <div className={classes.NumberCircle}>
+                                            {avgNum}€
+                                    </div>
+                                    </div>
+                            }
+
                             break;
                         case "avgMonthTransactions":
-                            stats = <div> avgMonthTransactions </div>
+                            avgNum = this.state.tabData[0].average_per_month;
+                            if (avgNum === null) {
+                                stats =
+                                    <div className={classes.Title}>
+                                        This client hasn't made any transactions yet.
+                                    </div>
+                            }
+                            else {
+                                if (Math.floor(avgNum) !== avgNum)
+                                    decDigits = avgNum.toString().split(".")[1].length || 0;
+                                if (decDigits >= 2)
+                                    avgNum = avgNum.toFixed(2);
+                                else if (decDigits === 1)
+                                    avgNum = avgNum.toString() + '0';
+
+                                stats =
+                                    <div>
+                                        <div className={classes.Title}> Average Transactions per Week </div>
+                                        <br />
+                                        <br />
+                                        <br />
+                                        <br />
+                                        <div className={classes.NumberCircle}>
+                                            {avgNum}€
+                                    </div>
+                                    </div>
+                            }
                             break;
                         default:
                             stats = <div> How did you get here? There is nothing for you to see! Leave. </div>
@@ -166,7 +311,7 @@ class SingleClient extends Component {
                 output = (
                     <div>
                         <div className={classes.Title}>
-                            Information about Client:{this.state.loadedClient.id}
+                            Information about Client:{this.state.loadedClient.card_id}
                         </div>
 
                         <div className={classes.Info}>
@@ -174,7 +319,7 @@ class SingleClient extends Component {
                             <div> Date of Birth: {birthday} </div>
                             <div> Phone: {this.state.loadedClient.phone} </div>
                             <div> Family members: {this.state.loadedClient.family_members} </div>
-                            <div> Pet: {this.state.loadedClient.pet} </div>
+                            <div> Pet: {this.state.loadedClient.pet ? this.state.loadedClient.pet : "No pet"} </div>
                             <div> Points: {this.state.loadedClient.points} </div>
                             <div> Address: {address} </div>
                         </div>
