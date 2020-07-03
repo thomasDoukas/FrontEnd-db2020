@@ -14,7 +14,7 @@ class TransactionsPage extends Component {
         stores: [],
         formIsReady: false,
         formData: {
-            store_id: 1,
+            store_id: null,
             date_time: ["", ""],
             pieces: [0, 0],
             total_amount: [0, 0],
@@ -22,8 +22,8 @@ class TransactionsPage extends Component {
             category_id: ""
         },
         result: null,
-        // nextView: "By Product Category"
-        nextView: "General Transactions"
+        nextView: "By Product Category"
+        // nextView: "General Transactions"
     }
 
     //Set URL /stores/getStoreList
