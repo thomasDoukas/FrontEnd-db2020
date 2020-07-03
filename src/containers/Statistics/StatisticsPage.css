@@ -45,3 +45,41 @@
 .Content button.active {
     border-bottom: 2px solid white;
 }
+
+.NumberCircle {
+    width: 200px;
+    margin: auto;
+    line-height: 200px;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 40px;
+    border: 2px solid #333333;
+    background-color: #333333;
+    color: rgb(151, 216, 207);
+}
+
+.NumberCircle:hover {
+    width: 200px;
+    margin: 0 auto;
+    line-height: 200px;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 40px;
+    border: 2px solid rgb(151, 216, 207);
+    background-color: rgb(151, 216, 207);
+    color: #333333;
+}
+
+.CircleContent {
+    width: 400px;
+    margin: 0 auto;
+    line-height: 400px;
+    border-radius: 50%;
+    text-align: center;
+    border: 2px solid #333333;
+}
+
+.Image {
+    height: 20px;
+    width: 20px;
+}

@@ -1,4 +1,11 @@
 import React, { Component } from 'react';
+import { Bar } from 'react-chartjs-2'
+
+import ArrElement from '../../components/Arr/ArrElement/ArrElement.js';
+import first from '../../../src/assets/images/1st.png';
+import second from '../../../src/assets/images/2nd.png';
+import third from '../../../src/assets/images/3rd.png';
+
 import axios from '../../axios.js';
 
 import classes from './StatisticsPage.css';
@@ -40,27 +47,301 @@ class StatisticsPage extends Component {
     render() {
 
         let output = <div> Loading... </div>;
-        // output = <div> {this.state.tabData} </div>
 
         if (this.state.tabData) {
             switch (this.state.selectedTab) {
                 case "productCouples":
-                    output = <div> productCouples </div>
+                    output = (
+                        <div>
+                            <div className={classes.Title}> Pairs of products frequently bought together. </div>
+                            <br />
+                            <br />
+                            {
+                                this.state.tabData.map((pair, index) => {
+                                    return (
+                                        <ArrElement
+                                            key={index}
+                                            firstTag={"Product 1"}
+                                            id={pair.name1 + " " + pair.brand1}
+                                            secondTag={"Product 2"}
+                                            body={pair.name2 + " " + pair.brand2}
+                                            thirdTag={"Times bought together"}
+                                            secondaryBody={pair.times}
+                                        />
+                                    )
+                                })
+                            }
+                        </div>
+                    )
                     break;
                 case "famousLocations":
-                    output = <div> famousLocations </div>
+                    output = (
+                        <div>
+                            <div className={classes.Title}> Famous locations of products in stores. </div>
+                            <br />
+                            <br />
+                            {
+                                this.state.tabData.map((location, index) => {
+                                    return (
+                                        <ArrElement
+                                            key={index}
+                                            firstTag={"Alley"}
+                                            id={location.alley}
+                                            secondTag={"Shelf"}
+                                            body={location.shelf}
+                                            thirdTag={"Products found in this location"}
+                                            secondaryBody={location.number_of_products}
+                                        />
+                                    )
+                                })
+                            }
+                        </div>
+                    )
                     break;
                 case "houseProducts":
-                    output = <div> houseProducts </div>
+                    output = (
+                        <div>
+                            <div className={classes.Title}> People trust us! </div>
+                            <br />
+                            <br />
+                            <br />
+
+                            {
+                                this.state.tabData.map((prodCategory, index) => {
+
+                                    let decDigits = 0;
+                                    let percent = prodCategory.percentage;
+                                    let cat = "";
+
+                                    if (Math.floor(percent) !== percent)
+                                        decDigits = percent.toString().split(".")[1].length || 0;
+                                    if (decDigits >= 2)
+                                        percent = percent.toFixed(2);
+                                    else if (decDigits === 1)
+                                        percent = percent.toString() + '0';
+
+                                    switch (prodCategory.category_id) {
+                                        case 1:
+                                            cat = "Fresh";
+                                            break;
+                                        case 2:
+                                            cat = "Dairy and Frozen";
+                                            break;
+                                        case 3:
+                                            cat = "Drinks";
+                                            break;
+                                        case 4:
+                                            cat = "Personal";
+                                            break;
+                                        case 5:
+                                            cat = "Household";
+                                            break;
+                                        case 6:
+                                            cat = "Pet";
+                                            break;
+                                        default:
+                                            console.log("I SAID! You CAN'T be here");
+                                    }
+
+                                    return (
+                                        <div key={index} >
+                                            <div className={classes.Content}>
+                                                <br />
+                                                <br />
+                                                <br />
+                                                <div className={classes.NumberCircle}> {percent}% </div>
+                                                <br />
+                                                <div className={classes.Title} > of {cat} bought products are made from us! </div>
+                                            </div>
+                                            <br />
+                                            <br />
+                                        </div>
+                                    )
+                                })
+                            }
+
+                            <div style={{ fontSize: "10px" }}> Keeping it real!  </div>
+
+                        </div>
+                    )
                     break;
                 case "fruitfulTimes":
-                    output = <div> fruitfulTimes </div>
+                    let xAxis, yAxis = [];
+                    xAxis = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"];
+
+                    this.state.tabData.map(element => {
+                        //Create labels
+                        if (element.hour < 10)
+                            xAxis[element.hour - 9] = "0" + element.hour.toString() + ":00";
+                        else if (element.hour < 22)
+                            xAxis[element.hour - 9] = element.hour.toString() + ":00";
+                        else if (element.hour >= 22 || element.hour <= 8)
+                            console.log("mex");
+                        //Create dataset.data
+
+                        yAxis[element.hour - 9] = element.amount;
+                    });
+
+                    let configGraphs = {
+                        labels: xAxis,
+                        datasets: [
+                            {
+                                label: 'Money Spend',
+                                backgroundColor: 'rgba(51, 51, 51, 1)',
+                                borderColor: 'rgba(51, 51, 51, 1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgb(151, 216, 207, 1)',
+                                hoverBorderColor: 'rgb(151, 216, 207, 1)',
+                                data: yAxis
+                            }
+                        ]
+                    };
+                    output =
+                        <div>
+                            <div className={classes.Title}> Most profitable hours! </div>
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <div>
+                                <Bar
+                                    data={configGraphs}
+                                    width={100}
+                                    height={500}
+                                    options={{
+                                        maintainAspectRatio: false
+                                    }}
+                                />
+                            </div>
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <div style={{ fontSize: "10px" }}> Cha Ching ;)</div>
+                        </div>
                     break;
                 case "ageGroupPerHour":
-                    output = <div> ageGroupPerHour </div>
+                    let labelArray = [];
+                    xAxis = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"];
+                    let dataArray = this.state.tabData.reduce((r, a) => {
+                        r[a.age_group] = [...r[a.age_group] || [], a];
+                        return r;
+                    }, {});
+                    dataArray = Object.keys(dataArray).map(i => dataArray[i]);
+
+                    let data = [];
+
+                    dataArray.forEach(element => {
+                        let temp = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                        labelArray.push(element[0].age_group);
+
+                        element.forEach((internalElement) => {
+                            if (internalElement.hour >= 9 && internalElement.hour <= 21) {
+                                temp[internalElement["hour"] - 9] = internalElement["percentage"];
+                            }
+                        });
+                        data.push(temp);
+                    });
+
+                    console.log("xAxis", xAxis);
+                    console.log("labels", labelArray);
+                    console.log("data", data);
+
+                    // configGraphs = {
+                    //     labels: xAxis,
+                    //     datasets: []
+                    // };
+
+                    // data.forEach((el, index) => {
+                    //     configGraphs.datasets.push(
+                    //         {
+                    //             label: labelArray[index],
+                    //             backgroundColor: 'rgba(51, 51, 51, 1)',
+                    //             borderColor: 'rgba(51, 51, 51, 1)',
+                    //             borderWidth: 1,
+                    //             hoverBackgroundColor: 'rgb(151, 216, 207, 1)',
+                    //             hoverBorderColor: 'rgb(151, 216, 207, 1)',
+                    //             data: el[index]
+                    //         }
+                    //     );
+                    // })
+
+                    let colors = ["#97d8cf", "#cf97d8", "#d8cf97", "#97d8af", "#97c1d8"];
+
+                    let datasets =
+                        data.map((element, index) => {
+                            return (
+                                {
+                                    label: labelArray[index],
+                                    backgroundColor: colors[index % 5],
+                                    borderColor: colors[index % 5],
+                                    borderWidth: 1,
+                                    hoverBackgroundColor: 'rgb(151, 216, 207, 1)',
+                                    hoverBorderColor: 'rgb(151, 216, 207, 1)',
+                                    data: data[index]
+                                }
+                            )
+                        })
+
+                    configGraphs = {
+                        labels: xAxis,
+                        datasets
+                    };
+
+
+                    console.log("config", configGraphs);
+
+
+
+                    output =
+                        <div>
+                            <div className={classes.Title}> Visited by: </div>
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <div>
+                                <Bar
+                                    data={configGraphs}
+                                    width={100}
+                                    height={500}
+                                    options={{
+                                        maintainAspectRatio: false
+                                    }}
+                                />
+                            </div>
+                        </div>
+
                     break;
-                case "SpecialStats1":
-                    output = <div> SpecialStats1 </div>
+                case "HallOfFame":
+                    output =
+                        <div>
+                            <div className={classes.Title}> Best of the Best! </div>
+                            <br />
+                            <br />
+                            <br />
+                            {
+                                this.state.tabData.map((client, index) => {
+                                    return (
+                                        <div key={index}>
+                                            <ArrElement
+                                                firstTag={"Customer's name"}
+                                                id={client.name}
+                                                secondTag={"Age"}
+                                                body={client.age}
+                                                thirdTag={"Points"}
+                                                secondaryBody={client.points}
+                                            >
+                                                {index === 0 ? <img src={first} className={classes.Image} ></img> : null}
+                                                {index === 1 ? <img src={second} className={classes.Image} ></img> : null}
+                                                {index === 2 ? <img src={third} className={classes.Image} ></img> : null}
+                                            </ArrElement>
+
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
                     break;
                 case "SpecialStats2":
                     output = <div> SpecialStats2 </div>
@@ -85,7 +366,7 @@ class StatisticsPage extends Component {
                     onClick={this.changeTabHandler.bind(this, "/location")}
                     className={(this.state.selectedTab === "famousLocations") ? classes.active : null}
                 >
-                    Famous Store Locations
+                    Store Locations
                 </button>
 
                 <button
@@ -113,11 +394,11 @@ class StatisticsPage extends Component {
                 </button>
 
                 <button
-                    value={"SpecialStats1"}
-                    onClick={this.changeTabHandler.bind(this, "/special1")}
-                    className={(this.state.selectedTab === "SpecialStats1") ? classes.active : null}
+                    value={"HallOfFame"}
+                    onClick={this.changeTabHandler.bind(this, "/hof")}
+                    className={(this.state.selectedTab === "HallOfFame") ? classes.active : null}
                 >
-                    select6
+                    Hall of Fame
                 </button>
 
                 <button
@@ -129,8 +410,6 @@ class StatisticsPage extends Component {
                 </button>
 
 
-                <br />
-                <br />
                 <br />
                 <br />
                 <div> {output} </div>

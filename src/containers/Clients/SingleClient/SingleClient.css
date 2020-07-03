@@ -140,21 +140,6 @@
     border-bottom: 2px solid white;
 }
 
-/* .Circle {
-    margin: auto;
-    font-size: 100px;
-    text-align: center;
-    height: auto;
-    width: fit-content;
-    border: 1px solid #333333;
-    border-radius: 50%;
-    background-color: #333333;
-}
-
-.AverageNum {
-   color: rgb(151, 216, 207);
-} */
-
 .NumberCircle {
     width: 200px;
     margin: 0 auto;
@@ -167,35 +152,14 @@
     color: rgb(151, 216, 207);
 }
 
-/* .Square {
-    position: relative;
-    left: 35%;
-    width: 30%;
-    background-color: rebeccapurple;
-}
-  
-.Square:after {
-    content: "";
-    display: block;
-    padding-bottom: 100%;
-}
-
-.Circle {
-    margin: auto;
-    left: 20%;
-    top: 20%;
-    position: absolute;
-    border-radius: 50%;
+.NumberCircle:hover{
     width: 200px;
-    height: auto;
-    padding-top: 200px;
-    background: #333333;
-    color: rgb(151, 216, 207);
+    margin: 0 auto;
+    line-height: 200px;
+    border-radius: 50%;
     text-align: center;
+    font-size: 40px;
+    border: 2px solid rgb(151, 216, 207);
+    background-color: rgb(151, 216, 207);
+    color: #333333;
 }
-
-.Avg {
-    display: block;
-    background-color: rosybrown;
-    font-size: 100px;
-} */

@@ -269,7 +269,7 @@ class SingleClient extends Component {
                                         <br />
                                         <div className={classes.NumberCircle}>
                                             {avgNum}€
-                                    </div>
+                                        </div>
                                     </div>
                             }
 

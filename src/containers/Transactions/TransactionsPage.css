@@ -99,7 +99,7 @@
     height: 30px;
     font-size: 15px;
     position: absolute;
-    right: 0px;
+    right: 20px;
     bottom: 0px;
     outline: none;
 }
@@ -116,7 +116,7 @@
     height: 30px;
     font-size: 15px;
     position: absolute;
-    right: 0px;
+    right: 20px;
     top: 20px;
     outline: none;
 }
@@ -146,4 +146,21 @@
 .Range input {
     width: fit-content;
     margin-right: 5px;
+}
+
+.ToggleForm {
+    border: 2px solid #333333;
+    color: #333333;
+    background-color: white;
+    height: 30px;
+    font-size: 15px;
+    position: absolute;
+    right: 120px;
+    bottom: 20px;
+    outline: none;
+}
+
+.ToggleForm:hover {
+    color: rgb(151, 216, 207);
+    background-color: #333333;
 }
