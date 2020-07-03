@@ -5,7 +5,7 @@ import classes from './Donate.css';
 const donate = () => {
 
     const clickedHandler = () => {
-        alert("You sir, are awesome");
+        alert("You are awesome!");
     }
 
     return (

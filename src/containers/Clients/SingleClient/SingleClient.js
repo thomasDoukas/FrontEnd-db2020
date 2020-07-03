@@ -292,7 +292,7 @@ class SingleClient extends Component {
 
                                 stats =
                                     <div>
-                                        <div className={classes.Title}> Average Transactions per Week </div>
+                                        <div className={classes.Title}> Average Transactions per Month </div>
                                         <br />
                                         <br />
                                         <br />
@@ -350,14 +350,14 @@ class SingleClient extends Component {
                                 onClick={this.changeTabHandler.bind(this, "/average")}
                                 className={(this.state.selectedTab === "avgWeekTransactions") ? classes.active : null}
                             >
-                                Week Transactions
+                                Weekly Transactions
                             </button>
 
                             <button value={"avgMonthTransactions"}
                                 onClick={this.changeTabHandler.bind(this, "/average")}
                                 className={(this.state.selectedTab === "avgMonthTransactions") ? classes.active : null}
                             >
-                                Month Transactions
+                                Monthly Transactions
                             </button>
 
 

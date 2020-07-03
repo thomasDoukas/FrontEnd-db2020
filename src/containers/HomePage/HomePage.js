@@ -22,6 +22,17 @@ class HomePage extends Component {
                     <br/>
                     Χωριανόπουλος Μανώλης
                     <br/>
+
+                    <br/>
+                    <br/>
+                    <br/>
+
+                    Github repositories:
+                    <br/>
+                    <a href="https://github.com/phoevos/indlovu"> Back End </a>
+                    <br/>
+                    <a href="https://github.com/ThomasDoukas/FrontEnd-db2020"> Front End </a>
+
                 </div>
 
                 <div className={classes.Text3} >

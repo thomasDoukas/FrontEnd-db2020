@@ -62,9 +62,9 @@ class StatisticsPage extends Component {
                                         <ArrElement
                                             key={index}
                                             firstTag={"Product 1"}
-                                            id={pair.name1 + " " + pair.brand1}
+                                            id={pair.name1 + ", " + pair.brand1}
                                             secondTag={"Product 2"}
-                                            body={pair.name2 + " " + pair.brand2}
+                                            body={pair.name2 + ", " + pair.brand2}
                                             thirdTag={"Times bought together"}
                                             secondaryBody={pair.times}
                                         />
@@ -169,7 +169,7 @@ class StatisticsPage extends Component {
                     let xAxis, yAxis = [];
                     xAxis = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"];
 
-                    this.state.tabData.map(element => {
+                    this.state.tabData.forEach(element => {
                         //Create labels
                         if (element.hour < 10)
                             xAxis[element.hour - 9] = "0" + element.hour.toString() + ":00";
@@ -186,7 +186,7 @@ class StatisticsPage extends Component {
                         labels: xAxis,
                         datasets: [
                             {
-                                label: 'Money Spend',
+                                label: 'Money Spent (€)',
                                 backgroundColor: 'rgba(51, 51, 51, 1)',
                                 borderColor: 'rgba(51, 51, 51, 1)',
                                 borderWidth: 1,
@@ -246,25 +246,6 @@ class StatisticsPage extends Component {
                     console.log("xAxis", xAxis);
                     console.log("labels", labelArray);
                     console.log("data", data);
-
-                    // configGraphs = {
-                    //     labels: xAxis,
-                    //     datasets: []
-                    // };
-
-                    // data.forEach((el, index) => {
-                    //     configGraphs.datasets.push(
-                    //         {
-                    //             label: labelArray[index],
-                    //             backgroundColor: 'rgba(51, 51, 51, 1)',
-                    //             borderColor: 'rgba(51, 51, 51, 1)',
-                    //             borderWidth: 1,
-                    //             hoverBackgroundColor: 'rgb(151, 216, 207, 1)',
-                    //             hoverBorderColor: 'rgb(151, 216, 207, 1)',
-                    //             data: el[index]
-                    //         }
-                    //     );
-                    // })
 
                     let colors = ["#97d8cf", "#cf97d8", "#d8cf97", "#97d8af", "#97c1d8"];
 
@@ -332,9 +313,9 @@ class StatisticsPage extends Component {
                                                 thirdTag={"Points"}
                                                 secondaryBody={client.points}
                                             >
-                                                {index === 0 ? <img src={first} className={classes.Image} ></img> : null}
-                                                {index === 1 ? <img src={second} className={classes.Image} ></img> : null}
-                                                {index === 2 ? <img src={third} className={classes.Image} ></img> : null}
+                                                {index === 0 ? <img src={first} className={classes.Image} alt={""} /> : null}
+                                                {index === 1 ? <img src={second} className={classes.Image} alt={""} /> : null}
+                                                {index === 2 ? <img src={third} className={classes.Image} alt={""} /> : null}
                                             </ArrElement>
 
                                         </div>
