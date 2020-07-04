@@ -102,7 +102,6 @@ class SingleProduct extends Component {
             else if (regex.test(data.brand_name))
                 alert("Oops! Please do not use numbers as brand name.");
             else {
-                data.first_transaction = data.first_transaction.split("T")[0];
                 console.log("updating with data: ", data);
                 axios.put('/products/' + this.props.match.params.productId, data)
                     .then(res => {
@@ -240,11 +239,11 @@ class SingleProduct extends Component {
                                 </select>
                             </div>
 
-                            <div>
+                            {/* <div>
                                 <label>First Transaction: </label>
                                 <br />
                                 <input type="date" defaultValue={defInputDate} name="first_transaction" onChange={this.changeHandler} />
-                            </div>
+                            </div> */}
                         </form>
 
                         <div className={classes.Buttons}>
