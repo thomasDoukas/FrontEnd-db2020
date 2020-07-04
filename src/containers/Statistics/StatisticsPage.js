@@ -234,7 +234,13 @@ class StatisticsPage extends Component {
                         r[a.age_group] = [...r[a.age_group] || [], a];
                         return r;
                     }, {});
-                    dataArray = Object.keys(dataArray).map(i => dataArray[i]);
+                    console.log("dataArray is HERE: ", dataArray);
+                    
+                    console.log(Object.keys(dataArray).sort());
+                    
+                    dataArray = Object.keys(dataArray).sort().map(i => dataArray[i]);
+
+                    console.log("dataArray is: ", dataArray);
 
                     let data = [];
 
@@ -340,16 +346,16 @@ class StatisticsPage extends Component {
                     break;
                 case "getPrize":
                     console.log(this.state.tabData);
-                    
+
                     output =
                         <div>
                             <div className={classes.Title}>
                                 Congratulations {this.state.tabData[0].name}!!!
                             </div>
                             <div> You gave us the most money this month and for that you'll be awarded with:</div>
-                            <br/>
-                            <br/>
-                            <br/>
+                            <br />
+                            <br />
+                            <br />
                             <div className={classes.NumberCircle}> {this.state.tabData[0].award}p. </div>
                         </div>
                     break;
