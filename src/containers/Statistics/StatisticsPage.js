@@ -209,7 +209,14 @@ class StatisticsPage extends Component {
                                     width={100}
                                     height={500}
                                     options={{
-                                        maintainAspectRatio: false
+                                        maintainAspectRatio: false,
+                                        scales: {
+                                            yAxes: [{
+                                                ticks: {
+                                                    beginAtZero: true
+                                                }
+                                            }]
+                                        }
                                     }}
                                 />
                             </div>
@@ -287,7 +294,14 @@ class StatisticsPage extends Component {
                                     width={100}
                                     height={500}
                                     options={{
-                                        maintainAspectRatio: false
+                                        maintainAspectRatio: false,
+                                        scales: {
+                                            yAxes: [{
+                                                ticks: {
+                                                    beginAtZero: true
+                                                }
+                                            }]
+                                        }
                                     }}
                                 />
                             </div>
@@ -324,8 +338,20 @@ class StatisticsPage extends Component {
                             }
                         </div>
                     break;
-                case "SpecialStats2":
-                    output = <div> SpecialStats2 </div>
+                case "getPrize":
+                    console.log(this.state.tabData);
+                    
+                    output =
+                        <div>
+                            <div className={classes.Title}>
+                                Congratulations {this.state.tabData[0].name}!!!
+                            </div>
+                            <div> You gave us the most money this month and for that you'll be awarded with:</div>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <div className={classes.NumberCircle}> {this.state.tabData[0].award}p. </div>
+                        </div>
                     break;
                 default:
                     output = <div> You again? There is NOTHING here. </div>
@@ -383,11 +409,11 @@ class StatisticsPage extends Component {
                 </button>
 
                 <button
-                    value={"SpecialStats2"}
-                    onClick={this.changeTabHandler.bind(this, "/special2")}
-                    className={(this.state.selectedTab === "SpecialStats2") ? classes.active : null}
+                    value={"getPrize"}
+                    onClick={this.changeTabHandler.bind(this, "/prize")}
+                    className={(this.state.selectedTab === "getPrize") ? classes.active : null}
                 >
-                    select7
+                    Get Prize
                 </button>
 
 

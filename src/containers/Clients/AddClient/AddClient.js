@@ -49,7 +49,7 @@ class AddClient extends Component {
             alert("Oops! Invalid client phone")
         else if (data.number <= 0)
             alert("Oops! Invalid address number.")
-        else if (data.postal_code && (data.postal_code < 11111 || data.postal_code > 99999) )
+        else if (data.postal_code && data.postal_code < 0 )
                 alert("Oops! Invalid postal code.");
         else if (data.points < 0)
             alert("Oops! Invalid points number.")
@@ -60,6 +60,7 @@ class AddClient extends Component {
         else if (regex.test(data.city))
             alert("Oops! Please do not use numbers as city name.");
         else {
+            data.date_of_birth = data.date_of_birth.split("T")[0];
             console.log("submitting the following data:", data);
             axios.post('/clients', data)
                 .then(res => {

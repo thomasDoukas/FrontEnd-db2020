@@ -41,6 +41,7 @@ class AddProduct extends Component {
         else if (regex.test(data.brand_name))
             alert("Oops! Please do not use numbers as brand name.");
         else {
+            data.first_transaction = data.first_transaction.split("T")[0];
             console.log("submitting the following data:", data);
             axios.post('/products', data)
                 .then(res => {

@@ -78,7 +78,7 @@ class SingleClient extends Component {
         let isReady = true;
         //Check newData for empty strings
         for (var member in data) {
-            if (data[member] === "")
+            if (data[member] === "" && member === "pet")
                 isReady = false;
         }
 
@@ -89,7 +89,7 @@ class SingleClient extends Component {
                 alert("Oops! Invalid client phone");
             else if (data.number && data.number <= 0)
                 alert("Oops! Invalid address number.");
-            else if (data.postal_code && (data.postal_code < 11111 || data.postal_code > 99999))
+            else if (data.postal_code && data.postal_code < 0)
                 alert("Oops! Invalid postal code.");
             else if (data.points && data.points < 0)
                 alert("Oops! Invalid points number.");
@@ -103,6 +103,7 @@ class SingleClient extends Component {
                 alert("Oops! Please do not use numbers in city name.");
             else {
                 console.log("updating with data: ", data);
+                data.date_of_birth = data.date_of_birth.split("T")[0];
                 axios.put('/clients/' + this.props.match.params.clientId, data)
                     .then(res => {
                         console.log("post /clients/:client returns", res.data);
@@ -239,7 +240,14 @@ class SingleClient extends Component {
                                         width={100}
                                         height={500}
                                         options={{
-                                            maintainAspectRatio: false
+                                            maintainAspectRatio: false,
+                                            scales: {
+                                                yAxes: [{
+                                                    ticks: {
+                                                        beginAtZero: true
+                                                    }
+                                                }]
+                                            }
                                         }}
                                     />
                             }

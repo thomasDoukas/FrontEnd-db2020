@@ -102,6 +102,7 @@ class SingleProduct extends Component {
             else if (regex.test(data.brand_name))
                 alert("Oops! Please do not use numbers as brand name.");
             else {
+                data.first_transaction = data.first_transaction.split("T")[0];
                 console.log("updating with data: ", data);
                 axios.put('/products/' + this.props.match.params.productId, data)
                     .then(res => {
@@ -162,7 +163,9 @@ class SingleProduct extends Component {
             if (this.state.loadedProduct) {
 
                 let date = new Date(this.state.loadedProduct.first_transaction);
+                console.log("new Data is: ", date);
                 let trans = date.toString().substring(0, 24);
+                console.log("trans is: ", trans);
                 const offset = date.getTimezoneOffset();
                 date = new Date(date.getTime() - (offset * 60 * 1000));
                 const defInputDate = date.toISOString().split('T')[0];
